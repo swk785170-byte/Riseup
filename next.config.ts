@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // A stray lockfile exists in the user directory above this project;
+  // pin the workspace root so Turbopack doesn't infer the wrong one.
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 export default nextConfig;
