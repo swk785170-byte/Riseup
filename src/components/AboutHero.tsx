@@ -23,10 +23,10 @@ export default function AboutHero() {
           transition={{ duration: 1, delay: 0.08, ease: EASE_PREMIUM }}
           className="max-w-4xl text-[clamp(2.6rem,7vw,6rem)] leading-[0.98] font-medium tracking-[-0.03em] text-balance"
         >
-          The people behind Rise Up Media.
+          Every Ship Needs A Crew
         </motion.h1>
 
-        <motion.p
+        {/* <motion.p
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.18, ease: EASE_PREMIUM }}
@@ -35,7 +35,7 @@ export default function AboutHero() {
           A small, senior studio of designers and engineers who sweat the
           details most agencies skip. We take on a handful of clients at a time
           — and treat every build like it carries our name.
-        </motion.p>
+        </motion.p> */}
       </div>
     </section>
   );

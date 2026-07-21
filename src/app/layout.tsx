@@ -19,6 +19,11 @@ export const metadata: Metadata = {
       "High-performance websites, e-commerce experiences and brands that convert.",
     type: "website",
   },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

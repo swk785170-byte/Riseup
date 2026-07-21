@@ -14,13 +14,13 @@ type Member = {
 };
 
 const TEAM: Member[] = [
-  { name: "Nejm S.", role: "Co-Founder, Developer", photo: "/team/nejm.jpg" },
+  { name: "Nejan", role: "Co-Founder, Developer", photo: "/team/nejm.jpg" },
   {
-    name: "Bakhta",
+    name: "Bathila",
     role: "Backend Developer, Tech Lead",
     photo: "/team/bakhta.jpg",
   },
-  { name: "Sida", role: "UI Designer, Co-Founder", photo: "/team/sida.jpg" },
+  { name: "Sudam", role: "UI Designer, Co-Founder", photo: "/team/sida.jpg" },
 ];
 
 /**

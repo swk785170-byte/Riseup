@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" fill="#0B0B0B" role="img" aria-label="Rise Up Media">
+  <!--
+    Recreated wordmark asset. On-page rendering uses components/Logo.tsx in the
+    site's Satoshi font; this standalone file uses a heavy system fallback so it
+    is self-contained for favicons / social share previews. Replace with the
+    official vector if available — no code change needed.
+  -->
+  <text x="18" y="150" font-family="'Satoshi', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="180" letter-spacing="-6">r</text>
+  <g transform="translate(120 6) scale(1.8)">
+    <circle cx="15" cy="14" r="11" />
+    <path d="M15 32 L26 43 L26 52 L15 41 L4 52 L4 43 Z" />
+    <path d="M15 58 L26 69 L26 78 L15 67 L4 78 L4 69 Z" />
+  </g>
+  <text x="188" y="150" font-family="'Satoshi', 'Arial Black', Arial, sans-serif" font-weight="900" font-size="180" letter-spacing="-6">seup</text>
+</svg>

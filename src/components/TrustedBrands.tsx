@@ -14,6 +14,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { EASE_PREMIUM } from "@/lib/motion";
+import { SITE_STATS, type Stat } from "@/lib/stats";
 
 type Brand = { name: string; icon: LucideIcon };
 
@@ -26,15 +27,6 @@ const BRANDS: Brand[] = [
   { name: "TIDEWATER", icon: Waves },
   { name: "TRUENORTH", icon: Compass },
   { name: "HEXWARE", icon: Hexagon },
-];
-
-type Stat = { value: number; suffix: string; label: string };
-
-const STATS: Stat[] = [
-  { value: 50, suffix: "+", label: "Projects Delivered" },
-  { value: 10, suffix: "+", label: "Brands Grown" },
-  { value: 98, suffix: "%", label: "Client Retention" },
-  { value: 8, suffix: "+", label: "Years of Craft" },
 ];
 
 function MarqueeRow() {
@@ -118,7 +110,7 @@ export default function TrustedBrands({
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-y-10 md:grid-cols-4">
-            {STATS.map((stat, i) => (
+            {SITE_STATS.map((stat, i) => (
               <Counter key={stat.label} stat={stat} withDivider={i > 0} />
             ))}
           </div>

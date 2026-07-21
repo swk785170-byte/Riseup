@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLenis, useScrollTo } from "./SmoothScroll";
+import Logo from "./Logo";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 const NAV_LINKS = [
   { label: "Work", target: "#work" },
   { label: "Services", target: "#services" },
+  { label: "LMS", target: "/services/lms" },
+  { label: "Pricing", target: "/pricing" },
   { label: "About", target: "/about" },
   { label: "Insights", target: "#insights" },
 ] as const;
@@ -23,7 +27,7 @@ export default function Navbar() {
 
   // Hash links smooth-scroll in place on the homepage and become "/#section"
   // elsewhere so the browser returns to the homepage anchor. Absolute routes
-  // (e.g. "/about") are always used as-is.
+  // (e.g. "/about", "/services/lms") are always used as-is.
   const hrefFor = (target: string) => {
     if (!target.startsWith("#")) return target;
     return isHome ? target : `/${target}`;
@@ -73,14 +77,15 @@ export default function Navbar() {
         }`}
       >
         <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:h-20 md:px-10">
-          {/* Wordmark */}
-          <a
-            href={isHome ? "#top" : "/"}
-            onClick={(e) => handleNav(e, "#top")}
-            className="text-[13px] font-black tracking-[0.2em] whitespace-nowrap"
+          {/* Logo */}
+          <Link
+            href="/"
+            aria-label="Rise Up Media — home"
+            onClick={() => setOpen(false)}
+            className="shrink-0"
           >
-            RISE UP MEDIA<span className="text-accent">.</span>
-          </a>
+            <Logo className="text-[26px] md:text-[32px]" />
+          </Link>
 
           {/* Desktop links */}
           <ul className="hidden items-center gap-9 md:flex">
@@ -139,7 +144,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.45, ease: EASE_PREMIUM }}
-            className="fixed inset-0 z-50 flex flex-col justify-between bg-background px-6 pt-28 pb-10 md:hidden"
+            className="fixed inset-0 z-50 flex flex-col justify-between overflow-y-auto bg-background px-6 pt-28 pb-10 md:hidden"
           >
             <nav>
               <ul className="flex flex-col gap-2">
