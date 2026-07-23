@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import ProjectsHero from "@/components/ProjectsHero";
 import ProjectsArchive from "@/components/ProjectsArchive";
 import ProjectsCTA from "@/components/ProjectsCTA";
+import { getAllProjects } from "@/lib/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects — RISE UP MEDIA",
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getAllProjects();
+
   return (
     <>
       <Navbar />
       <main>
         <ProjectsHero />
-        <ProjectsArchive />
+        <ProjectsArchive projects={projects} />
         <ProjectsCTA />
       </main>
       <Footer />

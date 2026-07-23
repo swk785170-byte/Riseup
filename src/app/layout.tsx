@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import GrainOverlay from "@/components/GrainOverlay";
 
 export const metadata: Metadata = {
   title: "RISE UP MEDIA — We Build Websites That Grow Businesses",
@@ -47,8 +48,8 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap"
         />
         <SmoothScroll>{children}</SmoothScroll>
-        {/* Persistent fractal-noise grain across the entire site */}
-        <div aria-hidden className="grain-overlay" />
+        {/* Persistent fractal-noise grain across the public site (not /admin) */}
+        <GrainOverlay />
       </body>
     </html>
   );

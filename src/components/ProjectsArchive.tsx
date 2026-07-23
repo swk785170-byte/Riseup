@@ -15,12 +15,19 @@ const PAGE_SIZE = 6;
  * count (Load More), and the open case study. Keeps the three presentational
  * children (filters / grid / pagination) in sync.
  */
-export default function ProjectsArchive() {
+export default function ProjectsArchive({
+  projects,
+}: {
+  projects: Project[];
+}) {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [active, setActive] = useState<Project | null>(null);
 
-  const filtered = useMemo(() => filterProjects(filter), [filter]);
+  const filtered = useMemo(
+    () => filterProjects(projects, filter),
+    [projects, filter],
+  );
   const shown = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
 

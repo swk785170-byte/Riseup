@@ -5,12 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import ProjectCard from "./ProjectCard";
 import CaseStudyModal from "./CaseStudyModal";
-import { getLmsProjects, type Project } from "@/lib/projects";
+import { type Project } from "@/lib/projects";
 import { EASE_PREMIUM } from "@/lib/motion";
 
-const LMS_PROJECTS = getLmsProjects();
-
-export default function LMSCustomers() {
+export default function LMSCustomers({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Project | null>(null);
 
   return (
@@ -29,7 +27,7 @@ export default function LMSCustomers() {
         />
 
         <div className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2 md:mt-16">
-          {LMS_PROJECTS.map((project, i) => (
+          {projects.map((project, i) => (
             <motion.div
               key={project.slug}
               initial={{ opacity: 0, y: 30 }}

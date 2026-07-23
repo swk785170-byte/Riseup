@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -48,8 +49,11 @@ export default function SmoothScroll({
   children: React.ReactNode;
 }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin") ?? false;
 
   useEffect(() => {
+    if (isAdmin) return; // the admin tool uses native scrolling
     gsap.registerPlugin(ScrollTrigger);
 
     const instance = new Lenis({ lerp: 0.05 });
@@ -66,7 +70,7 @@ export default function SmoothScroll({
       instance.destroy();
       setLenis(null);
     };
-  }, []);
+  }, [isAdmin]);
 
   return (
     <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>

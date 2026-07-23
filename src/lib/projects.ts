@@ -1,6 +1,11 @@
 /**
- * Single source of truth for portfolio projects — shared between the homepage
- * `FeaturedWork` row and the `/projects` archive so the two never drift.
+ * Project types, the CSS-mock / filter derivation, and the SEED_PROJECTS
+ * fallback.
+ *
+ * SEED_PROJECTS is the built-in portfolio used when Supabase isn't configured
+ * (and the source for the one-off seed script). When Supabase IS configured,
+ * `lib/data/projects.ts` fetches rows and maps them through `mapRowToProject`
+ * into this same rich `Project` shape, so every public component is unchanged.
  */
 
 export type MockVariant = "landing" | "dashboard" | "commerce" | "editorial";
@@ -35,7 +40,7 @@ export type Project = {
   featured?: boolean;
 };
 
-export const PROJECTS: Project[] = [
+export const SEED_PROJECTS: Project[] = [
   {
     slug: "alpine-ridge",
     name: "Alpine Ridge Outfitters",
@@ -294,11 +299,144 @@ export const PROJECT_FILTERS: { key: FilterKey; label: string }[] = [
   { key: "seo", label: "SEO & Growth" },
 ];
 
-export const getFeaturedProjects = (): Project[] =>
-  PROJECTS.filter((p) => p.featured);
+/** Pure client-side filter over an already-fetched list (used by the archive). */
+export const filterProjects = (
+  projects: Project[],
+  key: FilterKey,
+): Project[] =>
+  key === "all" ? projects : projects.filter((p) => p.filters.includes(key));
 
-export const filterProjects = (key: FilterKey): Project[] =>
-  key === "all" ? PROJECTS : PROJECTS.filter((p) => p.filters.includes(key));
+/* ------------------------------------------------------------------ */
+/*  Supabase row shape + mapping into the rich `Project` used by the UI */
+/* ------------------------------------------------------------------ */
 
-export const getLmsProjects = (): Project[] =>
-  PROJECTS.filter((p) => p.filters.includes("lms"));
+/** A row from the Supabase `projects` table. */
+export type DbProject = {
+  id: string;
+  title: string;
+  client_name: string;
+  category: string;
+  tag: string | null;
+  year: number;
+  description: string | null;
+  challenge: string | null;
+  solution: string | null;
+  results: { value: string; label: string }[];
+  tags: string[];
+  thumbnail_url: string | null;
+  gallery_urls: string[];
+  featured: boolean;
+  is_lms: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+// Discipline <-> filter key.
+const CATEGORY_TO_FILTER: Record<string, ProjectFilter> = {
+  "Web Design": "web-design",
+  "Web Development": "web-development",
+  "E-Commerce": "e-commerce",
+  "SEO & Growth": "seo",
+  LMS: "lms",
+};
+
+const FILTER_TO_CATEGORY: Record<ProjectFilter, string> = {
+  "web-design": "Web Design",
+  "web-development": "Web Development",
+  "e-commerce": "E-Commerce",
+  seo: "SEO & Growth",
+  lms: "LMS",
+};
+
+// Discipline -> CSS mock artwork (kept, per the "keep mocks" decision).
+const CATEGORY_VISUALS: Record<
+  string,
+  { tint: Tint; mock: MockVariant; secondaryMock: MockVariant }
+> = {
+  "Web Design": {
+    tint: { bg: "#e9e5df", deep: "#33302b", soft: "#cfc7ba" },
+    mock: "landing",
+    secondaryMock: "editorial",
+  },
+  "Web Development": {
+    tint: { bg: "#dde1e6", deep: "#2c3540", soft: "#b9c1cb" },
+    mock: "dashboard",
+    secondaryMock: "landing",
+  },
+  "E-Commerce": {
+    tint: { bg: "#e7e0d2", deep: "#3e4a3d", soft: "#c6bba4" },
+    mock: "commerce",
+    secondaryMock: "landing",
+  },
+  "SEO & Growth": {
+    tint: { bg: "#e1e3e2", deep: "#2b302e", soft: "#c3c7c4" },
+    mock: "editorial",
+    secondaryMock: "dashboard",
+  },
+  LMS: {
+    tint: { bg: "#dde2e8", deep: "#233047", soft: "#b9c2d1" },
+    mock: "dashboard",
+    secondaryMock: "landing",
+  },
+};
+
+const DEFAULT_VISUALS = CATEGORY_VISUALS["Web Design"];
+
+function deriveFilters(category: string, isLms: boolean): ProjectFilter[] {
+  const filters = new Set<ProjectFilter>();
+  const mapped = CATEGORY_TO_FILTER[category];
+  if (mapped) filters.add(mapped);
+  if (isLms) filters.add("lms");
+  if (filters.size === 0) filters.add("web-development");
+  return Array.from(filters);
+}
+
+/** Map a Supabase row into the rich `Project` the public UI renders. */
+export function mapRowToProject(row: DbProject): Project {
+  const visuals = CATEGORY_VISUALS[row.category] ?? DEFAULT_VISUALS;
+  return {
+    slug: row.id,
+    name: row.title,
+    client: row.client_name,
+    category: row.tag && row.tag.trim().length > 0 ? row.tag : row.category,
+    year: String(row.year),
+    tint: visuals.tint,
+    mock: visuals.mock,
+    secondaryMock: visuals.secondaryMock,
+    summary: row.description ?? "",
+    challenge: row.challenge ?? "",
+    solution: row.solution ?? "",
+    results: Array.isArray(row.results) ? row.results : [],
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    filters: deriveFilters(row.category, row.is_lms),
+    featured: Boolean(row.featured),
+  };
+}
+
+/** Inverse used by the one-off seed script to load SEED_PROJECTS into the DB. */
+export function seedProjectToRow(
+  project: Project,
+  index: number,
+): Omit<DbProject, "id" | "created_at" | "updated_at"> {
+  const primary =
+    project.filters.find((f) => f !== "lms") ?? project.filters[0];
+  const category = primary ? FILTER_TO_CATEGORY[primary] : "Web Development";
+  return {
+    title: project.name,
+    client_name: project.client,
+    category,
+    tag: project.category,
+    year: Number(project.year),
+    description: project.summary,
+    challenge: project.challenge,
+    solution: project.solution,
+    results: project.results,
+    tags: project.tags,
+    thumbnail_url: null,
+    gallery_urls: [],
+    featured: Boolean(project.featured),
+    is_lms: project.filters.includes("lms"),
+    sort_order: index,
+  };
+}

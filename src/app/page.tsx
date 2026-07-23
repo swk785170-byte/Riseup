@@ -6,8 +6,11 @@ import FeaturedWork from "@/components/FeaturedWork";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import { getFeaturedProjects } from "@/lib/data/projects";
 
-export default function Home() {
+export default async function Home() {
+  const featured = await getFeaturedProjects(3);
+
   return (
     <>
       <Navbar />
@@ -16,7 +19,7 @@ export default function Home() {
         {/* Switch to variant="stats" for animated counters instead of logos */}
         <TrustedBrands variant="marquee" />
         <Services />
-        <FeaturedWork />
+        <FeaturedWork projects={featured} />
         <Testimonials />
         <Contact />
       </main>

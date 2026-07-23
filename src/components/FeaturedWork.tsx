@@ -7,11 +7,9 @@ import SectionHeading from "./SectionHeading";
 import ProjectCard from "./ProjectCard";
 import CaseStudyModal from "./CaseStudyModal";
 import { EASE_PREMIUM } from "@/lib/motion";
-import { getFeaturedProjects, type Project } from "@/lib/projects";
+import { type Project } from "@/lib/projects";
 
-const FEATURED = getFeaturedProjects();
-
-export default function FeaturedWork() {
+export default function FeaturedWork({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Project | null>(null);
   const [canScroll, setCanScroll] = useState({ left: false, right: true });
   const scrollerRef = useRef<HTMLDivElement | null>(null);
@@ -117,7 +115,7 @@ export default function FeaturedWork() {
           onPointerLeave={endDrag}
           className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-6 overflow-x-auto px-5 pb-24 select-none active:cursor-grabbing md:px-10 md:pb-32"
         >
-          {FEATURED.map((project) => (
+          {projects.map((project) => (
             <div
               key={project.slug}
               data-work-card

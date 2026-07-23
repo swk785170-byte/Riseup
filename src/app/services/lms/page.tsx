@@ -6,6 +6,7 @@ import SmartCardFeature from "@/components/SmartCardFeature";
 import LMSServices from "@/components/LMSServices";
 import LMSTechStack from "@/components/LMSTechStack";
 import LMSCustomers from "@/components/LMSCustomers";
+import { getLMSProjects } from "@/lib/data/projects";
 
 export const metadata: Metadata = {
   title: "LMS — RISE UP MEDIA",
@@ -19,7 +20,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LMSPage() {
+export default async function LMSPage() {
+  const projects = await getLMSProjects();
+
   return (
     <>
       <Navbar />
@@ -28,7 +31,7 @@ export default function LMSPage() {
         <SmartCardFeature />
         <LMSServices />
         <LMSTechStack />
-        <LMSCustomers />
+        <LMSCustomers projects={projects} />
       </main>
       <Footer />
     </>
