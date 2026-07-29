@@ -6,9 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Code2,
   Gauge,
-  LifeBuoy,
+  GraduationCap,
   Palette,
-  ShoppingBag,
+  Server,
   type LucideIcon,
 } from "lucide-react";
 import SectionHeading from "./SectionHeading";
@@ -22,39 +22,39 @@ type Service = {
 
 const SERVICES: Service[] = [
   {
-    title: "Web Design & UI/UX",
+    title: "UI/UX Design",
     description:
-      "Interfaces that feel inevitable. Research-backed UX, editorial art direction and design systems your team can actually use.",
+      "Research-backed interfaces and design systems — from first wireframe to a polished product your team can actually run.",
     icon: Palette,
     tags: ["UX Research", "Design Systems", "Prototyping"],
   },
   {
     title: "Web Development",
     description:
-      "Custom builds on Next.js and modern tooling — fast, accessible and maintainable. No page builders, no bloat.",
+      "Fast, accessible custom builds on modern tooling. No page builders, no bloat — just software that lasts.",
     icon: Code2,
-    tags: ["Next.js & React", "Headless CMS", "API Integrations"],
+    tags: ["Next.js & React", "Headless CMS", "APIs"],
   },
   {
-    title: "E-Commerce Solutions",
+    title: "LMS & Smart Student Management",
     description:
-      "Storefronts engineered to sell: frictionless checkout, sub-second loads and merchandising that moves product.",
-    icon: ShoppingBag,
-    tags: ["Headless Shopify", "Custom Carts", "CRO"],
+      "Complete learning-management and school-administration systems: courses, grading, smart-card attendance and parent portals.",
+    icon: GraduationCap,
+    tags: ["LMS", "Smart Cards", "Admin"],
   },
   {
-    title: "SEO & Performance Optimization",
+    title: "SEO & Performance",
     description:
-      "Core Web Vitals in the green and rankings that climb — technical SEO and speed baked into every build, not bolted on.",
+      "Technical SEO and Core Web Vitals in the green — visibility and speed engineered in, not bolted on afterwards.",
     icon: Gauge,
     tags: ["Technical SEO", "Core Web Vitals", "Analytics"],
   },
   {
-    title: "Ongoing Support & Maintenance",
+    title: "IT Solutions & Support",
     description:
-      "A partner after launch: monitoring, iteration and a conversion roadmap that compounds results quarter over quarter.",
-    icon: LifeBuoy,
-    tags: ["Monitoring", "A/B Testing", "Retainers"],
+      "We're not just a web agency. Custom apps, systems integrations, internal tools and ongoing technical support — whatever your operation needs.",
+    icon: Server,
+    tags: ["Custom Apps", "Integrations", "Support"],
   },
 ];
 
@@ -95,11 +95,10 @@ export default function Services() {
           eyebrow="What We Do"
           title={
             <>
-              Everything your website needs{" "}
+              Everything your business needs{" "}
               <span className="accent-underline">to win</span>
             </>
           }
-          sub="Five disciplines, one team. We take sites from first sketch to compounding growth — and stay accountable for the results."
         />
 
         <div

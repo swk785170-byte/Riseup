@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import GrainOverlay from "@/components/GrainOverlay";
+import SplashScreen from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
   title: "RISE UP MEDIA — We Build Websites That Grow Businesses",
@@ -50,6 +51,8 @@ export default function RootLayout({
         <SmoothScroll>{children}</SmoothScroll>
         {/* Persistent fractal-noise grain across the public site (not /admin) */}
         <GrainOverlay />
+        {/* Brief branded loading splash on full page loads (not /admin) */}
+        <SplashScreen />
       </body>
     </html>
   );

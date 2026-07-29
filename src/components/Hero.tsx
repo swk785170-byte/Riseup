@@ -1,16 +1,50 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import MagneticButton from "./MagneticButton";
+import FloatingLines, { type FloatingLinesProps } from "./FloatingLines";
 import { useScrollTo } from "./SmoothScroll";
 
 const PHRASES = [
-  "Websites That Convert.",
-  "Brands That Stand Out.",
-  "Growth That Compounds.",
+  "Websites That Feel.",
+  "Premium Brands",
+  "Systems That Scale.",
 ] as const;
+
+// Stable, module-level config — its reference never changes across renders, so
+// the background never tears down / restarts (the "loop restart" root-cause fix).
+const HERO_LINES_CONFIG: FloatingLinesProps = {
+  enabledWaves: ["top", "middle", "bottom"],
+  lineCount: [6, 9, 12],
+  lineDistance: [8, 6, 4],
+  linesGradient: ["#0B0B0B", "#3A3A3A", "#C9C4B8"],
+  bendRadius: 5.0,
+  bendStrength: -0.5,
+  interactive: true,
+  parallax: true,
+  mixBlendMode: "multiply",
+};
+
+/**
+ * Isolated, memoized background leaf. It takes no changing props, so unrelated
+ * state elsewhere on the page (the typewriter's ~15fps setState, the Navbar's
+ * scroll-blur toggle, the testimonials marquee) can never cascade a re-render
+ * into the animated canvas.
+ */
+const HeroBackground = React.memo(function HeroBackground() {
+  return (
+    <div aria-hidden className="absolute inset-0 z-0">
+      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_10%,var(--surface)_0%,var(--background)_60%,var(--taupe)_100%)]" />
+      <FloatingLines {...HERO_LINES_CONFIG} />
+      {/* Brightness scrim so the headline keeps clear, comfortable contrast */}
+      <div className="absolute inset-0 bg-background/40" />
+      {/* Bottom wash to melt the hero into the next section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+    </div>
+  );
+});
 
 /** Types, holds, deletes and cycles through the given phrases. */
 function useTypewriter(
@@ -76,35 +110,10 @@ export default function Hero() {
       id="top"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
     >
-      {/* --- Background: washed-out video under a halftone ink screen --- */}
-      <div aria-hidden className="absolute inset-0">
-        {/* Depth fallback if the video hasn't loaded yet */}
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_10%,var(--surface)_0%,var(--background)_55%,var(--taupe)_100%)]" />
-        <video
-          className="absolute inset-0 h-full w-full object-cover opacity-[0.85] mix-blend-luminosity"
-          src="/hero_bg_web_dev.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
-        {/* Printed-ink halftone dot screen */}
-        <div className="halftone absolute inset-0" />
-        {/* Wash so type stays legible and the section melts into the next */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/75 via-background/20 to-background" />
-      </div>
+      <HeroBackground />
 
       {/* --- Copy --- */}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 pt-24 pb-28 text-center md:px-10">
-        <p
-          data-hero-reveal
-          className="mb-7 flex items-center gap-2.5 text-[11px] font-bold tracking-[0.3em] text-foreground/70 uppercase opacity-0"
-        >
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-          Web Development Agency
-        </p>
-
         <h1
           data-hero-reveal
           className="text-[clamp(2.75rem,8.5vw,7.25rem)] leading-[0.98] font-medium tracking-[-0.03em] text-balance opacity-0"
@@ -116,18 +125,16 @@ export default function Hero() {
           </span>
         </h1>
 
+        {/* Capped to ~2 lines via max-width so the CTA never shifts vertically */}
         <p
           data-hero-reveal
-          className="mt-8 max-w-xl text-base leading-relaxed text-muted opacity-0 md:text-lg"
+          className="mt-8 max-w-md text-base leading-relaxed text-muted opacity-0 md:text-lg"
         >
-          Rise Up Media is a web development studio for ambitious businesses —
-          strategy, design and engineering that turn visitors into customers.
+          A digital studio crafting websites, platforms and IT solutions for
+          teams that expect them to just work.
         </p>
 
-        <div
-          data-hero-reveal
-          className="mt-11 flex flex-col items-center gap-6 opacity-0 sm:flex-row"
-        >
+        <div data-hero-reveal className="mt-11 opacity-0">
           <MagneticButton
             href="#contact"
             onClick={(e) => {
@@ -136,21 +143,9 @@ export default function Hero() {
             }}
             className="rounded-full bg-accent px-9 py-4 text-[13px] font-bold tracking-[0.18em] text-background uppercase transition-colors duration-300 hover:bg-charcoal"
           >
-            Start Your Project
+            Get a Quote
             <ArrowRight size={16} strokeWidth={2.5} />
           </MagneticButton>
-
-          <a
-            href="#work"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollTo("#work");
-            }}
-            className="group text-[12px] font-semibold tracking-[0.18em] text-foreground/70 uppercase transition-colors duration-300 hover:text-foreground"
-          >
-            See Our Work
-            <span className="mt-1 block h-px w-full origin-left scale-x-100 bg-accent transition-transform duration-500 ease-premium group-hover:scale-x-50" />
-          </a>
         </div>
       </div>
 

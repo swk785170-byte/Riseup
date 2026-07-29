@@ -23,11 +23,6 @@ export default function ProjectCard({
       className="group block w-full text-left"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-        {/* Year badge */}
-        <span className="absolute top-4 left-4 z-10 rounded-full bg-background/85 px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] backdrop-blur-sm">
-          {project.year}
-        </span>
-
         <div className="h-full w-full grayscale-[0.35] transition-all duration-700 ease-premium group-hover:scale-[1.04] group-hover:grayscale-0">
           <BrowserMock tint={project.tint} variant={project.mock} />
         </div>

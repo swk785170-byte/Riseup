@@ -8,20 +8,30 @@ import { SegmentedToggle } from "./PricingToggle";
 import {
   LMS_GROUP,
   WEB_GROUP,
+  getCell,
+  type FeatureCell,
   type PricingCategory,
   type PricingGroup,
 } from "@/lib/pricing";
 import { EASE_PREMIUM } from "@/lib/motion";
 
-function Cell({ included }: { included: boolean }) {
-  return included ? (
-    <Check
-      size={17}
-      strokeWidth={2.5}
-      className="mx-auto text-foreground"
-      aria-label="Included"
-    />
-  ) : (
+function Cell({ cell }: { cell: FeatureCell }) {
+  if (cell.kind === "included") {
+    return (
+      <Check
+        size={17}
+        strokeWidth={2.5}
+        className="mx-auto text-foreground"
+        aria-label="Included"
+      />
+    );
+  }
+  if (cell.kind === "value") {
+    return (
+      <span className="text-sm font-medium text-foreground">{cell.value}</span>
+    );
+  }
+  return (
     <span className="text-muted" aria-label="Not included">
       —
     </span>
@@ -62,7 +72,7 @@ function ComparisonTable({ group }: { group: PricingGroup }) {
                 </td>
                 {group.tiers.map((tier) => (
                   <td key={tier.id} className="px-4 py-3.5 text-center">
-                    <Cell included={tier.includes.includes(feature.id)} />
+                    <Cell cell={getCell(tier, feature.id)} />
                   </td>
                 ))}
               </tr>
@@ -91,7 +101,7 @@ function ComparisonTable({ group }: { group: PricingGroup }) {
                   <span className="text-sm text-foreground/80">
                     {feature.label}
                   </span>
-                  <Cell included={tier.includes.includes(feature.id)} />
+                  <Cell cell={getCell(tier, feature.id)} />
                 </li>
               ))}
             </ul>

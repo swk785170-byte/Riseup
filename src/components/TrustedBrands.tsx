@@ -2,46 +2,33 @@
 
 import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView } from "framer-motion";
-import {
-  Anchor,
-  Compass,
-  Hexagon,
-  Layers,
-  Mountain,
-  Orbit,
-  Waves,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
 import { EASE_PREMIUM } from "@/lib/motion";
 import { SITE_STATS, type Stat } from "@/lib/stats";
 
-type Brand = { name: string; icon: LucideIcon };
+type Client = { name: string; file: string };
 
-const BRANDS: Brand[] = [
-  { name: "ORBITAL", icon: Orbit },
-  { name: "NORTHPEAK", icon: Mountain },
-  { name: "STRATA", icon: Layers },
-  { name: "HARBOR & CO", icon: Anchor },
-  { name: "VOLTIC", icon: Zap },
-  { name: "TIDEWATER", icon: Waves },
-  { name: "TRUENORTH", icon: Compass },
-  { name: "HEXWARE", icon: Hexagon },
+// Placeholder wordmark tiles — drop the real brand SVG/PNG at each `file` path
+// in /public/clients to replace them; nothing else needs to change.
+const CLIENTS: Client[] = [
+  { name: "AR", file: "/clients/ar.svg" },
+  { name: "Sispira", file: "/clients/sispira.svg" },
+  { name: "Mathdoc", file: "/clients/mathdoc.svg" },
+  { name: "Wasula Sir", file: "/clients/wasula.svg" },
+  { name: "Sagara Sir", file: "/clients/sagara.svg" },
+  { name: "Biozone", file: "/clients/biozone.svg" },
 ];
 
 function MarqueeRow() {
   return (
     <div className="flex items-center gap-16 pr-16 md:gap-24 md:pr-24">
-      {BRANDS.map((brand) => (
-        <div
-          key={brand.name}
-          className="flex items-center gap-3 opacity-40 grayscale transition-all duration-500 ease-premium hover:opacity-100 hover:grayscale-0"
-        >
-          <brand.icon size={20} strokeWidth={1.75} className="text-accent" />
-          <span className="text-sm font-bold tracking-[0.22em] whitespace-nowrap">
-            {brand.name}
-          </span>
-        </div>
+      {CLIENTS.map((client) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={client.name}
+          src={client.file}
+          alt={client.name}
+          className="h-8 w-auto shrink-0 opacity-40 grayscale transition-all duration-500 ease-premium hover:opacity-100 hover:grayscale-0 md:h-9"
+        />
       ))}
     </div>
   );
@@ -95,7 +82,7 @@ export default function TrustedBrands({
     >
       <div className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-14">
         <p className="mb-8 text-center text-[11px] font-bold tracking-[0.3em] text-muted uppercase">
-          Trusted by forward-thinking brands
+          Trusted by the teams we build with
         </p>
 
         {variant === "marquee" ? (

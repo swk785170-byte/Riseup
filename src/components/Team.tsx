@@ -4,24 +4,71 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CornerRightDown, User } from "lucide-react";
+import { CornerRightDown, Globe, User } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 
 type Member = {
   name: string;
   role: string;
   photo: string;
+  socials: { instagram: string; linkedin: string; website: string };
 };
 
+// TODO: replace the placeholder profile URLs with each member's real accounts.
 const TEAM: Member[] = [
-  { name: "Nejan", role: "Co-Founder, Developer", photo: "/team/nejm.jpg" },
+  {
+    name: "Nejan",
+    role: "Co-Founder, Developer",
+    photo: "/team/nejm.jpg",
+    socials: {
+      instagram: "https://instagram.com/",
+      linkedin: "https://linkedin.com/in/",
+      website: "https://riseupmedia.com",
+    },
+  },
   {
     name: "Bathila",
     role: "Backend Developer, Tech Lead",
     photo: "/team/bakhta.jpg",
+    socials: {
+      instagram: "https://instagram.com/",
+      linkedin: "https://linkedin.com/in/",
+      website: "https://riseupmedia.com",
+    },
   },
-  { name: "Sudam", role: "UI Designer, Co-Founder", photo: "/team/sida.jpg" },
+  {
+    name: "Sudam",
+    role: "UI Designer, Co-Founder",
+    photo: "/team/sida.jpg",
+    socials: {
+      instagram: "https://instagram.com/",
+      linkedin: "https://linkedin.com/in/",
+      website: "https://riseupmedia.com",
+    },
+  },
 ];
+
+function SocialButton({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="flex h-11 w-11 scale-90 items-center justify-center rounded-full bg-background/95 text-foreground shadow-md transition-all duration-500 ease-premium hover:bg-foreground hover:text-background group-hover:scale-100"
+    >
+      {children}
+    </a>
+  );
+}
 
 /**
  * Photo frame that shows an elegant placeholder until a real image exists at
@@ -58,6 +105,54 @@ function TeamCard({ member }: { member: Member }) {
 
         {/* Subtle darken on hover for depth */}
         <div className="pointer-events-none absolute inset-0 bg-foreground/0 transition-colors duration-500 group-hover:bg-foreground/10" />
+
+        {/* Hover: social links overlaid on the photo */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-3 opacity-0 transition-opacity duration-500 ease-premium group-hover:pointer-events-auto group-hover:opacity-100">
+          <SocialButton
+            href={member.socials.instagram}
+            label={`${member.name} on Instagram`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.75}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[18px] w-[18px]"
+              aria-hidden
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="1" />
+            </svg>
+          </SocialButton>
+          <SocialButton
+            href={member.socials.linkedin}
+            label={`${member.name} on LinkedIn`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.75}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[18px] w-[18px]"
+              aria-hidden
+            >
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg>
+          </SocialButton>
+          <SocialButton
+            href={member.socials.website}
+            label={`${member.name}'s website`}
+          >
+            <Globe size={18} strokeWidth={1.75} />
+          </SocialButton>
+        </div>
       </div>
 
       <div className="mt-5 flex items-start justify-between gap-3">
@@ -99,8 +194,8 @@ export default function Team() {
   }, []);
 
   return (
-    <section ref={scope} className="border-t border-border">
-      <div className="mx-auto max-w-7xl px-5 py-24 md:px-10 md:py-32">
+    <section ref={scope}>
+      <div className="mx-auto max-w-7xl px-5 pt-36 pb-24 md:px-10 md:pt-52 md:pb-28">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading
             eyebrow="Meet Our Team"

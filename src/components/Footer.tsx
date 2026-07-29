@@ -90,17 +90,18 @@ export default function Footer() {
       id="insights"
       className="relative border-t border-border bg-background"
     >
-      {/* Giant textural background wordmark — clipped to the footer via its own
-          wrapper so the straddling back-to-top button is never cut off. */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center leading-none font-black lowercase tracking-[-0.05em] text-foreground opacity-[0.05] select-none md:opacity-[0.06]"
-          style={{ fontSize: "clamp(5rem, 15vw, 15rem)" }}
-        >
-          riseup
-        </span>
-      </div>
+      {/* Repeating bold solid-chevron (>>>>) row behind all footer content */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.07]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='96' viewBox='0 0 72 96'%3E%3Cpath d='M14 14 L54 48 L14 82 L14 56 L34 48 L14 40 Z' fill='%230B0B0B'/%3E%3C/svg%3E\")",
+          backgroundSize: "72px 96px",
+          backgroundRepeat: "repeat",
+          backgroundPosition: "center",
+        }}
+      />
 
       {/* Foreground content */}
       <motion.div

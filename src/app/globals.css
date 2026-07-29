@@ -50,6 +50,49 @@
   }
 }
 
+/* FloatingLines hero background — seamless horizontal flow (loops with no seam
+   because the wave pattern repeats every 1440px, the translate distance). */
+@keyframes fl-flow-l {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-1440px);
+  }
+}
+@keyframes fl-flow-r {
+  from {
+    transform: translateX(-1440px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.fl-wave {
+  will-change: transform;
+  animation-name: fl-flow-l;
+  animation-duration: var(--fl-dur, 30s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.fl-wave-r {
+  animation-name: fl-flow-r;
+}
+
+/* RiseUpLoader — chevrons treadmill up by exactly one spacing (22) and loop. */
+@keyframes ru-rise {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-22px);
+  }
+}
+.ru-rise {
+  animation: ru-rise 0.75s linear infinite;
+  will-change: transform;
+}
+
 @keyframes float-a {
   0%,
   100% {
@@ -256,7 +299,9 @@ html.lenis body {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-float-a,
-  .animate-float-b {
+  .animate-float-b,
+  .fl-wave,
+  .ru-rise {
     animation: none;
   }
 }

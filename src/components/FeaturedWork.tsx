@@ -74,7 +74,7 @@ export default function FeaturedWork({ projects }: { projects: Project[] }) {
                 <span className="accent-underline">real results</span>
               </>
             }
-            sub="Every engagement ships with numbers attached. Drag through a few favourites — click any project for the full case study."
+            sub=""
           />
           <div className="flex gap-3">
             <button
@@ -135,9 +135,6 @@ export default function FeaturedWork({ projects }: { projects: Project[] }) {
             </span>
             <span className="text-lg font-semibold tracking-tight">
               View All Projects
-            </span>
-            <span className="text-[11px] font-semibold tracking-[0.2em] text-muted uppercase">
-              50+ launches — see the archive
             </span>
           </a>
         </div>

@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AboutHero from "@/components/AboutHero";
 import Team from "@/components/Team";
 import AboutDescription from "@/components/AboutDescription";
+import AboutGallery from "@/components/AboutGallery";
 import AboutContact from "@/components/AboutContact";
 
 export const metadata: Metadata = {
   title: "About — RISE UP MEDIA",
   description:
-    "Meet the small, senior team behind Rise Up Media — designers and engineers building websites that grow businesses. Reach us by email or WhatsApp.",
+    "Meet the small, senior team behind Rise Up Media — designers and engineers building websites and systems that grow businesses. Reach us by email or WhatsApp.",
   openGraph: {
     title: "About — RISE UP MEDIA",
     description:
@@ -23,9 +23,9 @@ export default function AboutPage() {
     <>
       <Navbar />
       <main>
-        <AboutHero />
         <Team />
         <AboutDescription />
+        <AboutGallery />
         <AboutContact />
       </main>
       <Footer />

@@ -41,9 +41,9 @@ export default function Contact() {
           transition={{ duration: 1, delay: 0.08, ease: EASE_PREMIUM }}
           className="text-[clamp(2.6rem,7.5vw,6.75rem)] leading-[0.98] font-medium tracking-[-0.03em] text-balance text-foreground"
         >
-          Let&rsquo;s Grow Your
+          Let&rsquo;s Take
           <br />
-          Business Online.
+          You Online.
         </motion.h2>
 
         <motion.p
@@ -53,8 +53,9 @@ export default function Contact() {
           transition={{ duration: 0.9, delay: 0.18, ease: EASE_PREMIUM }}
           className="mt-8 max-w-xl text-base leading-relaxed text-muted md:text-lg"
         >
-          Tell us where your business needs to go — we&rsquo;ll map the website
-          that gets it there. Free 30-minute strategy call, no obligation.
+          Tell us what you&rsquo;re building — a website, a platform, or
+          something bespoke — and we&rsquo;ll map the fastest path to launch.
+          Free 30-minute call, no obligation.
         </motion.p>
 
         <motion.div
@@ -69,7 +70,7 @@ export default function Contact() {
             strength={0.4}
             className="rounded-full bg-accent px-12 py-5 text-[13px] font-bold tracking-[0.2em] text-background uppercase shadow-[0_20px_50px_-20px_rgba(11,11,11,0.45)] transition-colors duration-300 hover:bg-charcoal"
           >
-            Start a Project
+            Get a Quote
             <ArrowUpRight size={17} strokeWidth={2.5} />
           </MagneticButton>
 

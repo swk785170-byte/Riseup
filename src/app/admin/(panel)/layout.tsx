@@ -25,12 +25,18 @@ export default function AdminPanelLayout({
             >
               <Logo className="text-[22px]" />
             </Link>
-            <nav className="hidden sm:flex">
+            <nav className="hidden items-center gap-6 sm:flex">
               <Link
                 href="/admin/projects"
                 className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
               >
                 Projects
+              </Link>
+              <Link
+                href="/admin/posts"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Posts
               </Link>
             </nav>
           </div>

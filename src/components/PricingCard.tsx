@@ -36,9 +36,6 @@ export default function PricingCard({
         <span className="text-3xl font-medium tracking-tight md:text-4xl">
           {tier.price}
         </span>
-        {tier.priceNote && (
-          <span className="text-xs text-muted">{tier.priceNote}</span>
-        )}
       </div>
 
       <div className="my-6 h-px w-full bg-border" />

@@ -48,6 +48,16 @@ export default function LMSPricing() {
             );
           })}
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10% 0px" }}
+          transition={{ duration: 0.7, ease: EASE_PREMIUM }}
+          className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-muted"
+        >
+          {LMS_GROUP.addOnNote}
+        </motion.p>
       </div>
     </section>
   );

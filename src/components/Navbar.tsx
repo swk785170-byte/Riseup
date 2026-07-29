@@ -10,11 +10,10 @@ import { EASE_PREMIUM } from "@/lib/motion";
 
 const NAV_LINKS = [
   { label: "Work", target: "#work" },
-  { label: "Services", target: "#services" },
+  { label: "About", target: "/about" },
   { label: "LMS", target: "/services/lms" },
   { label: "Pricing", target: "/pricing" },
-  { label: "About", target: "/about" },
-  { label: "Insights", target: "#insights" },
+  { label: "Blog", target: "/blog" },
 ] as const;
 
 export default function Navbar() {
