@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PricingHero from "@/components/PricingHero";
 import WebPricing from "@/components/WebPricing";
 import LMSPricing from "@/components/LMSPricing";
 import PricingComparison from "@/components/PricingComparison";
@@ -25,7 +24,6 @@ export default function PricingPage() {
     <>
       <Navbar />
       <main>
-        <PricingHero />
         <WebPricing />
         <LMSPricing />
         <PricingComparison />

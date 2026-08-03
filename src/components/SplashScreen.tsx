@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import RiseUpLoader from "./RiseUpLoader";
+import LoadingScreen from "./LoadingScreen";
 
 /**
  * Brief branded splash on a full page load — the rising-logo loader over the
@@ -44,7 +44,7 @@ export default function SplashScreen() {
         hidden ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
-      <RiseUpLoader className="text-5xl" />
+      <LoadingScreen />
     </div>
   );
 }

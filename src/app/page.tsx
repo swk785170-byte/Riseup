@@ -7,9 +7,13 @@ import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { getFeaturedProjects } from "@/lib/data/projects";
+import { getClientLogos } from "@/lib/data/client-logos";
 
 export default async function Home() {
-  const featured = await getFeaturedProjects(3);
+  const [featured, clientLogos] = await Promise.all([
+    getFeaturedProjects(3),
+    getClientLogos(),
+  ]);
 
   return (
     <>
@@ -17,7 +21,7 @@ export default async function Home() {
       <main>
         <Hero />
         {/* Switch to variant="stats" for animated counters instead of logos */}
-        <TrustedBrands variant="marquee" />
+        <TrustedBrands variant="marquee" logos={clientLogos} />
         <Services />
         <FeaturedWork projects={featured} />
         <Testimonials />

@@ -10,6 +10,8 @@ type Props = {
   value: string[];
   onChange: (urls: string[]) => void;
   multiple?: boolean;
+  /** Supabase Storage bucket to upload into. */
+  bucket?: string;
 };
 
 export default function ImageUpload({
@@ -17,6 +19,7 @@ export default function ImageUpload({
   value,
   onChange,
   multiple = false,
+  bucket = "project-images",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -52,15 +55,13 @@ export default function ImageUpload({
         const ext = file.name.split(".").pop() ?? "jpg";
         const path = `${crypto.randomUUID()}.${ext}`;
         const { error: upErr } = await supabase.storage
-          .from("project-images")
+          .from(bucket)
           .upload(path, file, { cacheControl: "3600", upsert: false });
         if (upErr) {
           setError(upErr.message);
           break;
         }
-        const { data } = supabase.storage
-          .from("project-images")
-          .getPublicUrl(path);
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
         uploaded.push(data.publicUrl);
         if (!multiple) break;
       }

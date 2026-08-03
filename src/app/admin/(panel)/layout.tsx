@@ -38,6 +38,12 @@ export default function AdminPanelLayout({
               >
                 Posts
               </Link>
+              <Link
+                href="/admin/client-logos"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Client Logos
+              </Link>
             </nav>
           </div>
           <LogoutButton />

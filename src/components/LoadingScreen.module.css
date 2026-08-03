@@ -1,0 +1,31 @@
+/* Scoped styles for the riseup loading animation. */
+
+.wrap {
+  width: min(var(--logo-width, 200px), 82vw);
+  height: auto;
+  display: block;
+}
+
+/*
+ * The four stacked arrow copies sit 33 user-units apart, so travelling exactly
+ * -33 lands each copy on the slot its neighbour just left — the loop restarts
+ * with no visible seam or jump.
+ */
+.arrows {
+  animation: riseup-arrow-travel var(--speed, 0.75s) linear infinite;
+}
+
+@keyframes riseup-arrow-travel {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-33px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrows {
+    animation: none;
+  }
+}

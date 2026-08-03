@@ -60,6 +60,55 @@ const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
   },
 ];
 
+/* ------------------------------------------------------------------ */
+/*  Interlocking chevron backdrop                                      */
+/* ------------------------------------------------------------------ */
+
+/** One chevron arm, full viewBox height. Spans x ∈ [-70, 140]. */
+const CHEVRON_POINTS = "0,0 140,250 0,500 -70,500 70,250 -70,0";
+const TILE_WIDTH = 220;
+const VIEW_HEIGHT = 500;
+
+/**
+ * A single row of grey chevrons stretched edge-to-edge. The viewBox width is an
+ * exact multiple of TILE_WIDTH and one extra tile is drawn beyond each edge, so
+ * the pattern reads as if it continues infinitely off both sides with no dead
+ * space or seam. `preserveAspectRatio="none"` lets it fill any container size
+ * without JS recalculation on resize.
+ */
+function ChevronPattern({
+  tiles,
+  opacity,
+  className = "",
+}: {
+  tiles: number;
+  opacity: number;
+  className?: string;
+}) {
+  const width = tiles * TILE_WIDTH;
+  // -1 … tiles inclusive → a full tile of bleed past both edges.
+  const indices = Array.from({ length: tiles + 2 }, (_, i) => i - 1);
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox={`0 0 ${width} ${VIEW_HEIGHT}`}
+      preserveAspectRatio="none"
+      className={`absolute inset-0 h-full w-full ${className}`}
+    >
+      <g fill="#8E8E8E" opacity={opacity}>
+        {indices.map((i) => (
+          <polygon
+            key={i}
+            points={CHEVRON_POINTS}
+            transform={`translate(${i * TILE_WIDTH}, 0)`}
+          />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
 export default function Footer() {
   const scrollTo = useScrollTo();
   const lenis = useLenis();
@@ -90,18 +139,15 @@ export default function Footer() {
       id="insights"
       className="relative border-t border-border bg-background"
     >
-      {/* Repeating bold solid-chevron (>>>>) row behind all footer content */}
+      {/* Full-bleed interlocking chevron graphic behind all footer content */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='96' viewBox='0 0 72 96'%3E%3Cpath d='M14 14 L54 48 L14 82 L14 56 L34 48 L14 40 Z' fill='%230B0B0B'/%3E%3C/svg%3E\")",
-          backgroundSize: "72px 96px",
-          backgroundRepeat: "repeat",
-          backgroundPosition: "center",
-        }}
-      />
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      >
+        {/* Fewer, chunkier chevrons on small screens so it stays legible */}
+        <ChevronPattern tiles={3} opacity={0.22} className="md:hidden" />
+        <ChevronPattern tiles={8} opacity={0.28} className="hidden md:block" />
+      </div>
 
       {/* Foreground content */}
       <motion.div
@@ -179,19 +225,19 @@ export default function Footer() {
 
         {/* Bottom row — copyright + legal */}
         <div className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-xs text-muted">
+          <p className="text-xs text-charcoal">
             © 2026 Rise Up Media. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a
               href="#"
-              className="text-xs text-muted underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
+              className="text-xs text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="text-xs text-muted underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
+              className="text-xs text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
             >
               Terms of Service
             </a>

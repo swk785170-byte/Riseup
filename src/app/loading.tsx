@@ -1,9 +1,9 @@
-import RiseUpLoader from "@/components/RiseUpLoader";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Loading() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <RiseUpLoader className="text-4xl" />
+      <LoadingScreen />
     </div>
   );
 }

@@ -18,8 +18,9 @@ const item: Variants = {
 
 export default function WebPricing() {
   return (
-    <section id="web-packages" className="scroll-mt-24 border-t border-border">
-      <div className="mx-auto max-w-7xl px-5 py-20 md:px-10 md:py-24">
+    // First section on /pricing — top padding clears the fixed navbar.
+    <section id="web-packages" className="scroll-mt-24">
+      <div className="mx-auto max-w-7xl px-5 pt-36 pb-20 md:px-10 md:pt-52 md:pb-24">
         <SectionHeading
           center
           eyebrow="Web Packages"
