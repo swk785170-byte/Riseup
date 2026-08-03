@@ -38,8 +38,9 @@ const HeroBackground = React.memo(function HeroBackground() {
     <div aria-hidden className="absolute inset-0 z-0">
       <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_10%,var(--surface)_0%,var(--background)_60%,var(--taupe)_100%)]" />
       <FloatingLines {...HERO_LINES_CONFIG} />
-      {/* Brightness scrim so the headline keeps clear, comfortable contrast */}
-      <div className="absolute inset-0 bg-background/40" />
+      {/* Brightness scrim so the headline keeps clear, comfortable contrast.
+          Stronger on mobile, where the waves sit much closer to the copy. */}
+      <div className="absolute inset-0 bg-background/60 md:bg-background/40" />
       {/* Bottom wash to melt the hero into the next section */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
     </div>
@@ -113,10 +114,18 @@ export default function Hero() {
       <HeroBackground />
 
       {/* --- Copy --- */}
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 pt-24 pb-28 text-center md:px-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 py-24 text-center md:px-10 md:pb-28">
+        {/* Mobile-only soft scrim: fades the waves out locally behind the copy
+            (above the background, below the text) while they stay fully
+            visible above and below the text block. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-2 top-1/2 -z-10 h-[70%] -translate-y-1/2 rounded-[40%] bg-background/80 blur-2xl md:hidden"
+        />
+
         <h1
           data-hero-reveal
-          className="text-[clamp(2.75rem,8.5vw,7.25rem)] leading-[0.98] font-medium tracking-[-0.03em] text-balance opacity-0"
+          className="text-[clamp(2.25rem,9vw,3.5rem)] leading-[1.02] font-medium tracking-[-0.03em] text-balance opacity-0 md:text-[clamp(2.75rem,8.5vw,7.25rem)] md:leading-[0.98]"
         >
           <span className="block">We Build</span>
           <span className="block min-h-[2.1em] md:min-h-[1.1em]">
@@ -125,16 +134,17 @@ export default function Hero() {
           </span>
         </h1>
 
-        {/* Capped to ~2 lines via max-width so the CTA never shifts vertically */}
+        {/* Capped to ~2 lines via max-width so the CTA never shifts vertically.
+            Hidden on mobile so the stack is just headline → CTA → chevron. */}
         <p
           data-hero-reveal
-          className="mt-8 max-w-md text-base leading-relaxed text-muted opacity-0 md:text-lg"
+          className="mt-8 hidden max-w-md text-base leading-relaxed text-muted opacity-0 md:block md:text-lg"
         >
           A digital studio crafting websites, platforms and IT solutions for
           teams that expect them to just work.
         </p>
 
-        <div data-hero-reveal className="mt-11 opacity-0">
+        <div data-hero-reveal className="mt-9 opacity-0 md:mt-11">
           <MagneticButton
             href="#contact"
             onClick={(e) => {

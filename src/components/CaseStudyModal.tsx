@@ -1,13 +1,46 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, X } from "lucide-react";
 import { BrowserMock } from "./ProjectMock";
 import { useLenis, useScrollTo } from "./SmoothScroll";
 import { EASE_PREMIUM } from "@/lib/motion";
-import type { Project } from "@/lib/projects";
+import type { MockVariant, Project, Tint } from "@/lib/projects";
+
+/**
+ * An uploaded screenshot when one exists, otherwise the CSS browser mock —
+ * also falling back if the image URL fails to load, so the modal never shows a
+ * broken image.
+ */
+function ProjectMedia({
+  src,
+  alt,
+  tint,
+  variant,
+}: {
+  src?: string | null;
+  alt: string;
+  tint: Tint;
+  variant: MockVariant;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  if (src && !failed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="h-full w-full object-cover"
+      />
+    );
+  }
+  return <BrowserMock tint={tint} variant={variant} />;
+}
 
 /**
  * Slide-up case-study overlay. Locks background scroll while mounted and
@@ -100,9 +133,14 @@ export default function CaseStudyModal({
               {project.summary}
             </p>
 
-            {/* Hero mock */}
+            {/* Hero artwork — uploaded thumbnail, else the CSS mock */}
             <div className="mt-10 aspect-[16/9] overflow-hidden rounded-2xl border border-border">
-              <BrowserMock tint={project.tint} variant={project.mock} />
+              <ProjectMedia
+                src={project.thumbnailUrl}
+                alt={project.name}
+                tint={project.tint}
+                variant={project.mock}
+              />
             </div>
 
             <div className="mt-12 grid gap-12 md:grid-cols-[1.4fr_1fr] md:gap-16">
@@ -152,13 +190,20 @@ export default function CaseStudyModal({
               </div>
             </div>
 
-            {/* Secondary screens */}
+            {/* Secondary screens — uploaded gallery images, else CSS mocks */}
             <div className="mt-14 grid gap-5 sm:grid-cols-2">
               <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-                <BrowserMock tint={project.tint} variant={project.secondaryMock} />
+                <ProjectMedia
+                  src={project.galleryUrls?.[0]}
+                  alt={`${project.name} — screen 1`}
+                  tint={project.tint}
+                  variant={project.secondaryMock}
+                />
               </div>
               <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-                <BrowserMock
+                <ProjectMedia
+                  src={project.galleryUrls?.[1]}
+                  alt={`${project.name} — screen 2`}
                   tint={project.tint}
                   variant={project.mock === "landing" ? "editorial" : "landing"}
                 />

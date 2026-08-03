@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SafeImage from "@/components/SafeImage";
 import { getPostBySlug } from "@/lib/data/posts";
 
 export const dynamic = "force-dynamic";
@@ -81,13 +82,8 @@ export default async function BlogPostPage({
           )}
 
           {post.coverUrl && (
-            <div className="mt-10 overflow-hidden rounded-2xl border border-border">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={post.coverUrl}
-                alt=""
-                className="aspect-[16/9] w-full object-cover"
-              />
+            <div className="mt-10 aspect-[16/9] overflow-hidden rounded-2xl border border-border">
+              <SafeImage src={post.coverUrl} alt={post.title} />
             </div>
           )}
 

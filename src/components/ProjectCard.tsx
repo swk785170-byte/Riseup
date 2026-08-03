@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { BrowserMock } from "./ProjectMock";
 import type { Project } from "@/lib/projects";
@@ -15,6 +16,11 @@ export default function ProjectCard({
   project: Project;
   onOpen: (project: Project) => void;
 }) {
+  // Uploaded thumbnail wins; if it's missing or fails to load we fall back to
+  // the CSS browser mock rather than showing a broken image.
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = Boolean(project.thumbnailUrl) && !imageFailed;
+
   return (
     <button
       type="button"
@@ -24,7 +30,18 @@ export default function ProjectCard({
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
         <div className="h-full w-full grayscale-[0.35] transition-all duration-700 ease-premium group-hover:scale-[1.04] group-hover:grayscale-0">
-          <BrowserMock tint={project.tint} variant={project.mock} />
+          {showImage && project.thumbnailUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={project.thumbnailUrl}
+              alt={project.name}
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <BrowserMock tint={project.tint} variant={project.mock} />
+          )}
         </div>
 
         {/* Hover veil + view pill */}

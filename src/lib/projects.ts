@@ -38,6 +38,13 @@ export type Project = {
   filters: ProjectFilter[];
   /** Curated subset shown on the homepage row. */
   featured?: boolean;
+  /**
+   * Admin-uploaded artwork (Supabase Storage public URLs). Optional — when a
+   * project has no uploaded image the UI falls back to the CSS browser mock,
+   * so seed projects render exactly as before.
+   */
+  thumbnailUrl?: string | null;
+  galleryUrls?: string[];
 };
 
 export const SEED_PROJECTS: Project[] = [
@@ -411,6 +418,9 @@ export function mapRowToProject(row: DbProject): Project {
     tags: Array.isArray(row.tags) ? row.tags : [],
     filters: deriveFilters(row.category, row.is_lms),
     featured: Boolean(row.featured),
+    // Carry the uploaded artwork through to the public components.
+    thumbnailUrl: row.thumbnail_url,
+    galleryUrls: Array.isArray(row.gallery_urls) ? row.gallery_urls : [],
   };
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { AlertTriangle, ImagePlus, Loader2, X } from "lucide-react";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { IMAGE_MAX_BYTES, IMAGE_MIME_TYPES } from "@/lib/schemas/project";
 
@@ -24,6 +24,8 @@ export default function ImageUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** URLs saved to the row that the browser could not actually load. */
+  const [broken, setBroken] = useState<string[]>([]);
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -85,8 +87,24 @@ export default function ImageUpload({
             key={url}
             className="relative h-20 w-28 overflow-hidden rounded-lg border border-border bg-surface"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={url} alt="" className="h-full w-full object-cover" />
+            {/* Live preview: confirms the stored URL actually resolves before
+                staff leave the form, rather than finding out on the live site. */}
+            {broken.includes(url) ? (
+              <div className="flex h-full w-full flex-col items-center justify-center gap-1 px-1 text-center">
+                <AlertTriangle size={16} className="text-red-600" />
+                <span className="text-[9px] leading-tight font-bold text-red-600 uppercase">
+                  Won&rsquo;t load
+                </span>
+              </div>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={url}
+                alt=""
+                onError={() => setBroken((b) => [...b, url])}
+                className="h-full w-full object-cover"
+              />
+            )}
             <button
               type="button"
               onClick={() => onChange(value.filter((u) => u !== url))}
@@ -125,6 +143,14 @@ export default function ImageUpload({
         onChange={(e) => handleFiles(e.target.files)}
       />
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {broken.length > 0 && (
+        <p className="mt-2 text-sm text-red-600">
+          An uploaded image isn&rsquo;t loading. Check that the{" "}
+          <code className="font-mono">{bucket}</code> bucket is set to{" "}
+          <strong>Public</strong> in Supabase → Storage, and that a public read
+          policy exists for it.
+        </p>
+      )}
     </div>
   );
 }

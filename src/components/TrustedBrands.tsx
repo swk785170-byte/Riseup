@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { animate, motion, useInView } from "framer-motion";
 import { EASE_PREMIUM } from "@/lib/motion";
 import { SITE_STATS, type Stat } from "@/lib/stats";
@@ -11,10 +12,12 @@ import type { ClientLogo } from "@/lib/client-logos";
  * wordmark while a real logo is still being collected.
  */
 function LogoSlot({ logo }: { logo: ClientLogo }) {
+  // Fall back to the text wordmark if the image URL is missing *or* fails.
+  const [failed, setFailed] = useState(false);
   const shared =
     "shrink-0 opacity-40 grayscale transition-all duration-500 ease-premium hover:opacity-100 hover:grayscale-0";
 
-  if (!logo.logoUrl) {
+  if (!logo.logoUrl || failed) {
     return (
       <span
         className={`${shared} text-lg font-black tracking-tight whitespace-nowrap md:text-xl`}
@@ -29,6 +32,8 @@ function LogoSlot({ logo }: { logo: ClientLogo }) {
     <img
       src={logo.logoUrl}
       alt={logo.name}
+      loading="lazy"
+      onError={() => setFailed(true)}
       className={`${shared} h-8 w-auto md:h-9`}
     />
   );
