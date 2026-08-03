@@ -27,7 +27,7 @@ export default function LoadingScreen({
     <svg
       role="status"
       aria-label={label}
-      viewBox="0 0 300 150"
+      viewBox="0 0 375 150"
       className={`${styles.wrap} ${className}`}
     >
       <defs>
@@ -40,25 +40,31 @@ export default function LoadingScreen({
         </clipPath>
       </defs>
 
-      {/* Static wordmark: "r" + head dot + "seup" (the stem is the arrows) */}
+      {/* Static wordmark: "r" + head dot + "seup" (the stem is the arrows).
+          Font size is set so the letters' x-height matches the arrow stem
+          (y 48 → 112.5), and `textLength` pins each run's exact width so the
+          glyphs can never drift into the arrow window at x 55–95, whatever the
+          resolved font metrics are. */}
       <g fill="currentColor" className="text-foreground">
         <text
-          x="10"
+          x="6"
           y="112"
-          fontSize="90"
+          fontSize="122"
           fontWeight="900"
-          letterSpacing="-3"
+          textLength="47"
+          lengthAdjust="spacingAndGlyphs"
           className="font-sans lowercase"
         >
           r
         </text>
         <circle cx="74.5" cy="30" r="13" />
         <text
-          x="93"
+          x="97"
           y="112"
-          fontSize="90"
+          fontSize="122"
           fontWeight="900"
-          letterSpacing="-3"
+          textLength="272"
+          lengthAdjust="spacingAndGlyphs"
           className="font-sans lowercase"
         >
           seup
