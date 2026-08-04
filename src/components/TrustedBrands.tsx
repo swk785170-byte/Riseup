@@ -14,13 +14,14 @@ import type { ClientLogo } from "@/lib/client-logos";
 function LogoSlot({ logo }: { logo: ClientLogo }) {
   // Fall back to the text wordmark if the image URL is missing *or* fails.
   const [failed, setFailed] = useState(false);
+  // Full colour at full opacity at all times — hover is a subtle scale-up.
   const shared =
-    "shrink-0 opacity-40 grayscale transition-all duration-500 ease-premium hover:opacity-100 hover:grayscale-0";
+    "shrink-0 transition-transform duration-500 ease-premium hover:scale-105";
 
   if (!logo.logoUrl || failed) {
     return (
       <span
-        className={`${shared} text-lg font-black tracking-tight whitespace-nowrap md:text-xl`}
+        className={`${shared} text-2xl font-black tracking-tight whitespace-nowrap md:text-3xl`}
       >
         {logo.name}
       </span>
@@ -34,14 +35,14 @@ function LogoSlot({ logo }: { logo: ClientLogo }) {
       alt={logo.name}
       loading="lazy"
       onError={() => setFailed(true)}
-      className={`${shared} h-8 w-auto md:h-9`}
+      className={`${shared} h-12 w-auto object-contain md:h-14`}
     />
   );
 }
 
 function MarqueeRow({ logos }: { logos: ClientLogo[] }) {
   return (
-    <div className="flex items-center gap-16 pr-16 md:gap-24 md:pr-24">
+    <div className="flex items-center gap-20 pr-20 md:gap-28 md:pr-28">
       {logos.map((logo) => (
         <LogoSlot key={logo.id} logo={logo} />
       ))}

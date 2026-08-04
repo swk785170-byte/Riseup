@@ -28,7 +28,8 @@ export default function ProjectCard({
       aria-label={`Open ${project.name} case study`}
       className="group block w-full text-left"
     >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
+      {/* bg-surface letterboxes uncropped images so the grid stays aligned */}
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="h-full w-full grayscale-[0.35] transition-all duration-700 ease-premium group-hover:scale-[1.04] group-hover:grayscale-0">
           {showImage && project.thumbnailUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -37,7 +38,7 @@ export default function ProjectCard({
               alt={project.name}
               loading="lazy"
               onError={() => setImageFailed(true)}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
             />
           ) : (
             <BrowserMock tint={project.tint} variant={project.mock} />

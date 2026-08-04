@@ -35,7 +35,7 @@ function ProjectMedia({
         alt={alt}
         loading="lazy"
         onError={() => setFailed(true)}
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain"
       />
     );
   }
@@ -57,6 +57,7 @@ export default function CaseStudyModal({
   const lenis = useLenis();
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const gallery = project.galleryUrls ?? [];
 
   // Escape to close
   useEffect(() => {
@@ -133,8 +134,9 @@ export default function CaseStudyModal({
               {project.summary}
             </p>
 
-            {/* Hero artwork — uploaded thumbnail, else the CSS mock */}
-            <div className="mt-10 aspect-[16/9] overflow-hidden rounded-2xl border border-border">
+            {/* Hero artwork — uploaded thumbnail, else the CSS mock.
+                Letterboxed so the whole image is visible, never cropped. */}
+            <div className="mt-10 aspect-[16/9] overflow-hidden rounded-2xl border border-border bg-surface">
               <ProjectMedia
                 src={project.thumbnailUrl}
                 alt={project.name}
@@ -190,25 +192,25 @@ export default function CaseStudyModal({
               </div>
             </div>
 
-            {/* Secondary screens — uploaded gallery images, else CSS mocks */}
-            <div className="mt-14 grid gap-5 sm:grid-cols-2">
-              <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-                <ProjectMedia
-                  src={project.galleryUrls?.[0]}
-                  alt={`${project.name} — screen 1`}
-                  tint={project.tint}
-                  variant={project.secondaryMock}
-                />
+            {/* Every uploaded gallery image, uncropped. Omitted entirely when
+                the project has no gallery beyond its thumbnail. */}
+            {gallery.length > 0 && (
+              <div className="mt-14 grid gap-5 sm:grid-cols-2">
+                {gallery.map((url, i) => (
+                  <div
+                    key={url}
+                    className="aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-surface"
+                  >
+                    <ProjectMedia
+                      src={url}
+                      alt={`${project.name} — screen ${i + 1}`}
+                      tint={project.tint}
+                      variant={project.secondaryMock}
+                    />
+                  </div>
+                ))}
               </div>
-              <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-                <ProjectMedia
-                  src={project.galleryUrls?.[1]}
-                  alt={`${project.name} — screen 2`}
-                  tint={project.tint}
-                  variant={project.mock === "landing" ? "editorial" : "landing"}
-                />
-              </div>
-            </div>
+            )}
 
             <div className="mt-14 flex flex-col items-start justify-between gap-6 rounded-2xl bg-surface/70 p-8 sm:flex-row sm:items-center md:p-10">
               <p className="max-w-md text-lg font-medium tracking-tight">
