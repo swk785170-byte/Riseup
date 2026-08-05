@@ -3,16 +3,15 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Mail, MessageCircle } from "lucide-react";
 import MagneticButton from "./MagneticButton";
+import { useSiteSettings } from "./SettingsProvider";
 import { EASE_PREMIUM } from "@/lib/motion";
 
-// TODO: replace with the real WhatsApp business number — international
-// format, digits only, no "+" (e.g. 447700900123).
-const WHATSAPP_NUMBER = "1234567890";
-const WHATSAPP_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  "Hi Rise Up Media, I'd like to talk about a project.",
-)}`;
-
 export default function AboutContact() {
+  const { email, whatsappNumber } = useSiteSettings();
+  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    "Hi Rise Up Media, I'd like to talk about a project.",
+  )}`;
+
   return (
     <section
       id="about-contact"
@@ -54,9 +53,9 @@ export default function AboutContact() {
         >
           {/* Email — primary filled pill */}
           <MagneticButton
-            href="mailto:hello@riseupmedia.com"
+            href={`mailto:${email}`}
             strength={0.2}
-            ariaLabel="Email hello@riseupmedia.com"
+            ariaLabel={`Email ${email}`}
             className="w-full rounded-full bg-foreground px-8 py-4 text-sm font-semibold tracking-tight text-background transition-colors duration-300 hover:bg-charcoal sm:w-auto"
           >
             <Mail size={17} strokeWidth={2} />
@@ -65,7 +64,7 @@ export default function AboutContact() {
 
           {/* WhatsApp — secondary outline pill, opens in a new tab */}
           <MagneticButton
-            href={WHATSAPP_HREF}
+            href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             strength={0.2}

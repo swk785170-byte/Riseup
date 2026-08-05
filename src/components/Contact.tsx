@@ -3,9 +3,12 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import MagneticButton from "./MagneticButton";
+import { useSiteSettings } from "./SettingsProvider";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 export default function Contact() {
+  const { email } = useSiteSettings();
+
   return (
     <section
       id="contact"
@@ -66,7 +69,7 @@ export default function Contact() {
           className="mt-12 flex flex-col items-center gap-7"
         >
           <MagneticButton
-            href="mailto:hello@riseupmedia.com?subject=New%20project"
+            href={`mailto:${email}?subject=New%20project`}
             strength={0.4}
             className="rounded-full bg-accent px-12 py-5 text-[13px] font-bold tracking-[0.2em] text-background uppercase shadow-[0_20px_50px_-20px_rgba(11,11,11,0.45)] transition-colors duration-300 hover:bg-charcoal"
           >
@@ -76,10 +79,10 @@ export default function Contact() {
 
           <p className="text-sm text-muted">
             <a
-              href="mailto:hello@riseupmedia.com"
+              href={`mailto:${email}`}
               className="font-semibold text-foreground underline decoration-accent decoration-2 underline-offset-4 transition-colors duration-300 hover:text-accent"
             >
-              hello@riseupmedia.com
+              {email}
             </a>{" "}
             — we reply within 24 hours
           </p>

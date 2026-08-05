@@ -3,6 +3,9 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import GrainOverlay from "@/components/GrainOverlay";
 import SplashScreen from "@/components/SplashScreen";
+import SettingsProvider from "@/components/SettingsProvider";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import { getSiteSettings } from "@/lib/data/site";
 
 export const metadata: Metadata = {
   title: "RISE UP MEDIA — We Build Websites That Grow Businesses",
@@ -28,11 +31,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="en">
       <body className="font-sans antialiased">
@@ -48,11 +53,15 @@ export default function RootLayout({
           precedence="default"
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap"
         />
-        <SmoothScroll>{children}</SmoothScroll>
-        {/* Persistent fractal-noise grain across the public site (not /admin) */}
-        <GrainOverlay />
-        {/* Brief branded loading splash on full page loads (not /admin) */}
-        <SplashScreen />
+        <SettingsProvider settings={settings}>
+          <SmoothScroll>{children}</SmoothScroll>
+          {/* Persistent fractal-noise grain across the public site (not /admin) */}
+          <GrainOverlay />
+          {/* Brief branded loading splash on full page loads (not /admin) */}
+          <SplashScreen />
+          {/* Floating WhatsApp contact (not /admin, hidden if no number set) */}
+          <WhatsAppButton />
+        </SettingsProvider>
       </body>
     </html>
   );

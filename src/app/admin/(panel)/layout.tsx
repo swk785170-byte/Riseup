@@ -50,6 +50,24 @@ export default function AdminPanelLayout({
               >
                 Testimonials
               </Link>
+              <Link
+                href="/admin/team"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Team
+              </Link>
+              <Link
+                href="/admin/gallery"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Gallery
+              </Link>
+              <Link
+                href="/admin/settings"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Settings
+              </Link>
             </nav>
           </div>
           <LogoutButton />

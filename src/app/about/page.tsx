@@ -5,6 +5,7 @@ import Team from "@/components/Team";
 import AboutDescription from "@/components/AboutDescription";
 import AboutGallery from "@/components/AboutGallery";
 import AboutContact from "@/components/AboutContact";
+import { getGalleryImages, getTeamMembers } from "@/lib/data/site";
 
 export const metadata: Metadata = {
   title: "About — RISE UP MEDIA",
@@ -18,14 +19,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [team, gallery] = await Promise.all([
+    getTeamMembers(),
+    getGalleryImages(),
+  ]);
+
   return (
     <>
       <Navbar />
       <main>
-        <Team />
+        <Team members={team} />
         <AboutDescription />
-        <AboutGallery />
+        <AboutGallery images={gallery} />
         <AboutContact />
       </main>
       <Footer />

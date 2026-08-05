@@ -4,9 +4,15 @@ import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { useLenis, useScrollTo } from "./SmoothScroll";
+import { useSiteSettings } from "./SettingsProvider";
 import { EASE_PREMIUM } from "@/lib/motion";
+import type { SiteSettings } from "@/lib/settings";
 
 type NavLink = { label: string; href: string; scroll?: boolean };
+type SocialKey = Extract<
+  keyof SiteSettings,
+  "instagramUrl" | "facebookUrl" | "linkedinUrl" | "youtubeUrl"
+>;
 
 // Only the pages the site actually has (About + Projects are routes;
 // Services + Contact are homepage sections).
@@ -18,10 +24,11 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 // Inline brand glyphs (Lucide removed its brand icons in recent versions).
-const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
+// `href` is filled from admin-managed settings at render time.
+const SOCIAL_ICONS: { key: SocialKey; label: string; icon: React.ReactNode }[] = [
   {
+    key: "instagramUrl",
     label: "Instagram",
-    href: "https://instagram.com/riseupmedia",
     icon: (
       <>
         <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -31,15 +38,15 @@ const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
     ),
   },
   {
+    key: "facebookUrl",
     label: "Facebook",
-    href: "https://facebook.com/riseupmedia",
     icon: (
       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
     ),
   },
   {
+    key: "linkedinUrl",
     label: "LinkedIn",
-    href: "https://linkedin.com/company/riseupmedia",
     icon: (
       <>
         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -49,8 +56,8 @@ const SOCIALS: { label: string; href: string; icon: React.ReactNode }[] = [
     ),
   },
   {
+    key: "youtubeUrl",
     label: "YouTube",
-    href: "https://youtube.com/@riseupmedia",
     icon: (
       <>
         <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
@@ -112,6 +119,7 @@ function ChevronPattern({
 export default function Footer() {
   const scrollTo = useScrollTo();
   const lenis = useLenis();
+  const settings = useSiteSettings();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -122,6 +130,9 @@ export default function Footer() {
 
   const intercepts = (link: NavLink) =>
     Boolean(link.scroll) && link.href.startsWith("#") && isHome;
+
+  // Only show socials that have a URL set in the admin panel.
+  const socials = SOCIAL_ICONS.filter((s) => Boolean(settings[s.key]));
 
   const toTop = () => {
     if (lenis) {
@@ -184,10 +195,10 @@ export default function Footer() {
           </nav>
 
           <div className="flex items-center gap-3">
-            {SOCIALS.map((social) => (
+            {socials.map((social) => (
               <a
                 key={social.label}
-                href={social.href}
+                href={settings[social.key]}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
@@ -213,10 +224,10 @@ export default function Footer() {
         {/* Center — email */}
         <div className="mt-12 text-center">
           <a
-            href="mailto:hello@riseupmedia.com"
+            href={`mailto:${settings.email}`}
             className="text-base text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline md:text-lg"
           >
-            hello@riseupmedia.com
+            {settings.email}
           </a>
         </div>
 

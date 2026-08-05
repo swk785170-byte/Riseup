@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useLenis, useScrollTo } from "./SmoothScroll";
+import { useSiteSettings } from "./SettingsProvider";
 import Logo from "./Logo";
 import { EASE_PREMIUM } from "@/lib/motion";
 
@@ -33,6 +34,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const lenis = useLenis();
   const scrollTo = useScrollTo();
+  const settings = useSiteSettings();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -251,10 +253,10 @@ export default function Navbar() {
               className="flex flex-col gap-5 border-t border-border pt-6"
             >
               <a
-                href="mailto:hello@riseupmedia.com"
+                href={`mailto:${settings.email}`}
                 className="text-sm text-muted"
               >
-                hello@riseupmedia.com
+                {settings.email}
               </a>
               <a
                 href={hrefFor("#contact")}
