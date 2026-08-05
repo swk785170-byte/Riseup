@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
 import {
   projectFormSchema,
   type ProjectFormValues,
@@ -13,13 +13,6 @@ export type ActionResult =
   | { ok: false; error: string };
 
 /** Verify a real signed-in admin before any privileged (service-role) write. */
-async function requireUser(): Promise<void> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-}
 
 function revalidatePublic(): void {
   revalidatePath("/");
@@ -48,15 +41,24 @@ function toRow(values: ProjectFormValues) {
   };
 }
 
+/**
+ * Never surface raw database/driver errors to the browser — they leak schema
+ * details, constraint names and internal paths. Log the real error server-side
+ * and return a generic, safe message instead.
+ */
 function errorMessage(err: unknown, fallback: string): string {
-  return err instanceof Error ? err.message : fallback;
+  console.error("[admin action]", err);
+  if (err instanceof Error && err.message === "Not authorised.") {
+    return "Not authorised.";
+  }
+  return fallback;
 }
 
 export async function createProject(
   input: ProjectFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = projectFormSchema.parse(input);
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -78,7 +80,7 @@ export async function updateProject(
   input: ProjectFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = projectFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin
@@ -95,7 +97,7 @@ export async function updateProject(
 
 export async function deleteProject(id: string): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { error } = await admin.from("projects").delete().eq("id", id);
     if (error) throw error;
@@ -112,7 +114,7 @@ export async function moveProject(
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("projects")

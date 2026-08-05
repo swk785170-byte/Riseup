@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
 import {
   testimonialFormSchema,
   type TestimonialFormValues,
@@ -12,13 +12,6 @@ export type ActionResult =
   | { ok: true; id?: string }
   | { ok: false; error: string };
 
-async function requireUser(): Promise<void> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-}
 
 /** Testimonials live on the homepage, so any change revalidates "/". */
 function revalidatePublic(): void {
@@ -37,15 +30,24 @@ function toRow(values: TestimonialFormValues) {
   };
 }
 
+/**
+ * Never surface raw database/driver errors to the browser — they leak schema
+ * details, constraint names and internal paths. Log the real error server-side
+ * and return a generic, safe message instead.
+ */
 function errorMessage(err: unknown, fallback: string): string {
-  return err instanceof Error ? err.message : fallback;
+  console.error("[admin action]", err);
+  if (err instanceof Error && err.message === "Not authorised.") {
+    return "Not authorised.";
+  }
+  return fallback;
 }
 
 export async function createTestimonial(
   input: TestimonialFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = testimonialFormSchema.parse(input);
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -70,7 +72,7 @@ export async function updateTestimonial(
   input: TestimonialFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = testimonialFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin
@@ -90,7 +92,7 @@ export async function updateTestimonial(
 
 export async function deleteTestimonial(id: string): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { error } = await admin.from("testimonials").delete().eq("id", id);
     if (error) throw error;
@@ -110,7 +112,7 @@ export async function moveTestimonial(
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("testimonials")

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
 import {
   clientLogoFormSchema,
   type ClientLogoFormValues,
@@ -12,13 +12,6 @@ export type ActionResult =
   | { ok: true; id?: string }
   | { ok: false; error: string };
 
-async function requireUser(): Promise<void> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-}
 
 /** The marquee lives on the homepage, so any change revalidates "/". */
 function revalidatePublic(): void {
@@ -34,15 +27,24 @@ function toRow(values: ClientLogoFormValues) {
   };
 }
 
+/**
+ * Never surface raw database/driver errors to the browser — they leak schema
+ * details, constraint names and internal paths. Log the real error server-side
+ * and return a generic, safe message instead.
+ */
 function errorMessage(err: unknown, fallback: string): string {
-  return err instanceof Error ? err.message : fallback;
+  console.error("[admin action]", err);
+  if (err instanceof Error && err.message === "Not authorised.") {
+    return "Not authorised.";
+  }
+  return fallback;
 }
 
 export async function createClientLogo(
   input: ClientLogoFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = clientLogoFormSchema.parse(input);
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -64,7 +66,7 @@ export async function updateClientLogo(
   input: ClientLogoFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = clientLogoFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin
@@ -81,7 +83,7 @@ export async function updateClientLogo(
 
 export async function deleteClientLogo(id: string): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { error } = await admin.from("client_logos").delete().eq("id", id);
     if (error) throw error;
@@ -98,7 +100,7 @@ export async function moveClientLogo(
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("client_logos")

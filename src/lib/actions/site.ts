@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
 import {
   galleryImageFormSchema,
   siteSettingsFormSchema,
@@ -16,16 +16,18 @@ export type ActionResult =
   | { ok: true; id?: string }
   | { ok: false; error: string };
 
-async function requireUser(): Promise<void> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-}
 
+/**
+ * Never surface raw database/driver errors to the browser — they leak schema
+ * details, constraint names and internal paths. Log the real error server-side
+ * and return a generic, safe message instead.
+ */
 function errorMessage(err: unknown, fallback: string): string {
-  return err instanceof Error ? err.message : fallback;
+  console.error("[admin action]", err);
+  if (err instanceof Error && err.message === "Not authorised.") {
+    return "Not authorised.";
+  }
+  return fallback;
 }
 
 /** Team + gallery live on /about. */
@@ -94,7 +96,7 @@ export async function createTeamMember(
   input: TeamMemberFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = teamMemberFormSchema.parse(input);
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -119,7 +121,7 @@ export async function updateTeamMember(
   input: TeamMemberFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = teamMemberFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin
@@ -139,7 +141,7 @@ export async function updateTeamMember(
 
 export async function deleteTeamMember(id: string): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { error } = await admin.from("team_members").delete().eq("id", id);
     if (error) throw error;
@@ -158,7 +160,7 @@ export async function moveTeamMember(
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const res = await swapOrder("team_members", id, direction);
     revalidateAbout();
     return res;
@@ -183,7 +185,7 @@ export async function createGalleryImage(
   input: GalleryImageFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = galleryImageFormSchema.parse(input);
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -205,7 +207,7 @@ export async function updateGalleryImage(
   input: GalleryImageFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = galleryImageFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin
@@ -222,7 +224,7 @@ export async function updateGalleryImage(
 
 export async function deleteGalleryImage(id: string): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { error } = await admin.from("gallery_images").delete().eq("id", id);
     if (error) throw error;
@@ -238,7 +240,7 @@ export async function moveGalleryImage(
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const res = await swapOrder("gallery_images", id, direction);
     revalidateAbout();
     return res;
@@ -255,7 +257,7 @@ export async function updateSiteSettings(
   input: SiteSettingsFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = siteSettingsFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin.from("site_settings").upsert({

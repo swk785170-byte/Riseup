@@ -5,6 +5,18 @@ import { AlertTriangle, ImagePlus, Loader2, X } from "lucide-react";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { IMAGE_MAX_BYTES, IMAGE_MIME_TYPES } from "@/lib/schemas/project";
 
+/**
+ * Extension is derived from the checked MIME type, never from the uploaded
+ * filename. Note SVG is deliberately absent: SVGs are XML and can carry script,
+ * which would be stored XSS on the Storage origin.
+ */
+const EXTENSION_BY_MIME: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/avif": "avif",
+};
+
 type Props = {
   label: string;
   value: string[];
@@ -54,11 +66,22 @@ export default function ImageUpload({
       const supabase = createClient();
       const uploaded: string[] = [];
       for (const file of list) {
-        const ext = file.name.split(".").pop() ?? "jpg";
+        // The original filename is attacker-controlled, so never let any part
+        // of it reach the storage path. Derive the extension from the verified
+        // MIME type and use a random UUID as the object name — this removes
+        // path traversal ("x.png/../../evil"), null bytes and double
+        // extensions in one step.
+        const ext = EXTENSION_BY_MIME[file.type] ?? "bin";
         const path = `${crypto.randomUUID()}.${ext}`;
         const { error: upErr } = await supabase.storage
           .from(bucket)
-          .upload(path, file, { cacheControl: "3600", upsert: false });
+          .upload(path, file, {
+            cacheControl: "3600",
+            upsert: false,
+            // Pin the stored content type to the validated value so the object
+            // can never be served as HTML/JS via MIME sniffing.
+            contentType: file.type,
+          });
         if (upErr) {
           setError(upErr.message);
           break;

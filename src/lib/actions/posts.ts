@@ -2,20 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
 import { postFormSchema, type PostFormValues } from "@/lib/schemas/post";
 
 export type ActionResult =
   | { ok: true; id?: string }
   | { ok: false; error: string };
 
-async function requireUser(): Promise<void> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-}
 
 /** Revalidate the blog list, every post page, and the admin list. */
 function revalidatePublic(): void {
@@ -42,15 +35,24 @@ function toRow(values: PostFormValues) {
   };
 }
 
+/**
+ * Never surface raw database/driver errors to the browser — they leak schema
+ * details, constraint names and internal paths. Log the real error server-side
+ * and return a generic, safe message instead.
+ */
 function errorMessage(err: unknown, fallback: string): string {
-  return err instanceof Error ? err.message : fallback;
+  console.error("[admin action]", err);
+  if (err instanceof Error && err.message === "Not authorised.") {
+    return "Not authorised.";
+  }
+  return fallback;
 }
 
 export async function createPost(
   input: PostFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = postFormSchema.parse(input);
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -72,7 +74,7 @@ export async function updatePost(
   input: PostFormValues,
 ): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const values = postFormSchema.parse(input);
     const admin = createAdminClient();
     const { error } = await admin
@@ -89,7 +91,7 @@ export async function updatePost(
 
 export async function deletePost(id: string): Promise<ActionResult> {
   try {
-    await requireUser();
+    await requireAdmin();
     const admin = createAdminClient();
     const { error } = await admin.from("posts").delete().eq("id", id);
     if (error) throw error;

@@ -20,8 +20,16 @@ export async function createClient() {
       },
       setAll(cookiesToSet) {
         try {
+          const secureCookies = process.env.NODE_ENV === "production";
           cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
+            // Harden the session cookie: HTTPS-only in production and not sent
+            // on cross-site requests (CSRF defence-in-depth alongside Next's
+            // built-in Server Action origin checks).
+            cookieStore.set(name, value, {
+              ...options,
+              sameSite: options?.sameSite ?? "lax",
+              secure: options?.secure ?? secureCookies,
+            }),
           );
         } catch {
           // Called from a Server Component (read-only cookies) — the
