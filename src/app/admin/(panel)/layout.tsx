@@ -44,6 +44,12 @@ export default function AdminPanelLayout({
               >
                 Client Logos
               </Link>
+              <Link
+                href="/admin/testimonials"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Testimonials
+              </Link>
             </nav>
           </div>
           <LogoutButton />

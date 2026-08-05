@@ -7,12 +7,14 @@ import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { getFeaturedProjects } from "@/lib/data/projects";
+import { getTestimonials } from "@/lib/data/testimonials";
 import { getClientLogos } from "@/lib/data/client-logos";
 
 export default async function Home() {
-  const [featured, clientLogos] = await Promise.all([
+  const [featured, clientLogos, testimonials] = await Promise.all([
     getFeaturedProjects(3),
     getClientLogos(),
+    getTestimonials(),
   ]);
 
   return (
@@ -24,7 +26,7 @@ export default async function Home() {
         <TrustedBrands variant="marquee" logos={clientLogos} />
         <Services />
         <FeaturedWork projects={featured} />
-        <Testimonials />
+        <Testimonials testimonials={testimonials} />
         <Contact />
       </main>
       <Footer />
