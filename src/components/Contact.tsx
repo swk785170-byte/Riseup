@@ -1,13 +1,23 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import MagneticButton from "./MagneticButton";
-import { useSiteSettings } from "./SettingsProvider";
+import ContactForm from "./ContactForm";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 export default function Contact() {
-  const { email } = useSiteSettings();
+  const [showForm, setShowForm] = useState(false);
+  const formRef = useRef<HTMLDivElement | null>(null);
+
+  // Reveal the form, then bring it into view once it has been laid out.
+  function openForm() {
+    setShowForm(true);
+    requestAnimationFrame(() =>
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+    );
+  }
 
   return (
     <section
@@ -49,44 +59,42 @@ export default function Contact() {
           You Online.
         </motion.h2>
 
-        <motion.p
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 0.9, delay: 0.18, ease: EASE_PREMIUM }}
-          className="mt-8 max-w-xl text-base leading-relaxed text-muted md:text-lg"
-        >
-          Tell us what you&rsquo;re building — a website, a platform, or
-          something bespoke — and we&rsquo;ll map the fastest path to launch.
-          Free 30-minute call, no obligation.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 0.9, delay: 0.28, ease: EASE_PREMIUM }}
-          className="mt-12 flex flex-col items-center gap-7"
-        >
-          <MagneticButton
-            href={`mailto:${email}?subject=New%20project`}
-            strength={0.4}
-            className="rounded-full bg-accent px-12 py-5 text-[13px] font-bold tracking-[0.2em] text-background uppercase shadow-[0_20px_50px_-20px_rgba(11,11,11,0.45)] transition-colors duration-300 hover:bg-charcoal"
-          >
-            Get a Quote
-            <ArrowUpRight size={17} strokeWidth={2.5} />
-          </MagneticButton>
-
-          <p className="text-sm text-muted">
-            <a
-              href={`mailto:${email}`}
-              className="font-semibold text-foreground underline decoration-accent decoration-2 underline-offset-4 transition-colors duration-300 hover:text-accent"
+        <AnimatePresence initial={false} mode="wait">
+          {!showForm && (
+            <motion.div
+              key="cta"
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.6, ease: EASE_PREMIUM }}
+              className="mt-12"
             >
-              {email}
-            </a>{" "}
-            — we reply within 24 hours
-          </p>
-        </motion.div>
+              <MagneticButton
+                onClick={openForm}
+                strength={0.4}
+                className="rounded-full bg-accent px-12 py-5 text-[13px] font-bold tracking-[0.2em] text-background uppercase shadow-[0_20px_50px_-20px_rgba(11,11,11,0.45)] transition-colors duration-300 hover:bg-charcoal"
+              >
+                Get a Quote
+                <ArrowUpRight size={17} strokeWidth={2.5} />
+              </MagneticButton>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showForm && (
+            <motion.div
+              ref={formRef}
+              key="form"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE_PREMIUM }}
+              className="mt-12 w-full max-w-2xl"
+            >
+              <ContactForm />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

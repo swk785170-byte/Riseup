@@ -8,12 +8,12 @@ import { getPublishedPosts } from "@/lib/data/posts";
 import type { Post } from "@/lib/posts";
 
 export const metadata: Metadata = {
-  title: "Blog — RISE UP MEDIA",
+  title: "Blog — RISEUP SOLUTIONS",
   description:
-    "Practical writing on web, systems and the craft of building things that last — from the Rise Up Media team.",
+    "Practical writing on web, systems and the craft of building things that last — from the Riseup Solutions team.",
   openGraph: {
-    title: "Blog — RISE UP MEDIA",
-    description: "Ideas, notes and field reports from the Rise Up Media team.",
+    title: "Blog — RISEUP SOLUTIONS",
+    description: "Ideas, notes and field reports from the Riseup Solutions team.",
     type: "website",
   },
 };

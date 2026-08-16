@@ -4,12 +4,12 @@ import Footer from "@/components/Footer";
 import SmsLogo from "@/components/SmsLogo";
 
 export const metadata: Metadata = {
-  title: "Smart Systems — RISE UP MEDIA",
+  title: "Smart Systems — RISEUP SOLUTIONS",
   description:
-    "The Smart Management System (SMS) from Rise Up Media — coming soon.",
+    "The Smart Management System (SMS) from Riseup Solutions — coming soon.",
   openGraph: {
-    title: "Smart Systems — RISE UP MEDIA",
-    description: "Something new from Rise Up Media — coming soon.",
+    title: "Smart Systems — RISEUP SOLUTIONS",
+    description: "Something new from Riseup Solutions — coming soon.",
     type: "website",
   },
 };

@@ -4,7 +4,7 @@ import LoginForm from "@/components/admin/LoginForm";
 import AdminSetupWarning from "@/components/admin/AdminSetupWarning";
 
 export const metadata: Metadata = {
-  title: "Admin — Rise Up Media",
+  title: "Admin — Riseup Solutions",
   robots: { index: false, follow: false },
 };
 
@@ -13,7 +13,7 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-5">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex justify-center">
-          <Logo className="text-[28px]" />
+          <Logo className="h-8 w-auto" />
         </div>
 
         {/* Server-rendered: warns when the allowlist is unset (fail closed). */}

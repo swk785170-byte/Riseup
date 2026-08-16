@@ -7,13 +7,13 @@ import ProjectsCTA from "@/components/ProjectsCTA";
 import { getAllProjects } from "@/lib/data/projects";
 
 export const metadata: Metadata = {
-  title: "Projects — RISE UP MEDIA",
+  title: "Projects — RISEUP SOLUTIONS",
   description:
-    "The full Rise Up Media portfolio — storefronts, web apps, brand sites and SEO rebuilds, each shipped with measurable results. Filter by discipline and explore the case studies.",
+    "The full Riseup Solutions portfolio — storefronts, web apps, brand sites and SEO rebuilds, each shipped with measurable results. Filter by discipline and explore the case studies.",
   openGraph: {
-    title: "Projects — RISE UP MEDIA",
+    title: "Projects — RISEUP SOLUTIONS",
     description:
-      "The full portfolio of websites Rise Up Media has designed, built and grown.",
+      "The full portfolio of websites Riseup Solutions has designed, built and grown.",
     type: "website",
   },
 };

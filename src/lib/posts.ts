@@ -40,7 +40,7 @@ export function mapRowToPost(row: DbPost): Post {
     excerpt: row.excerpt ?? "",
     coverUrl: row.cover_url,
     body: row.body ?? "",
-    author: row.author && row.author.trim() ? row.author : "Rise Up Media",
+    author: row.author && row.author.trim() ? row.author : "Riseup Solutions",
     published: row.published,
     publishedAt: row.published_at,
   };

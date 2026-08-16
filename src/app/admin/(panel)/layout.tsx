@@ -4,7 +4,7 @@ import Logo from "@/components/Logo";
 import LogoutButton from "@/components/admin/LogoutButton";
 
 export const metadata: Metadata = {
-  title: "Admin — Rise Up Media",
+  title: "Admin — Riseup Solutions",
   robots: { index: false, follow: false },
 };
 
@@ -23,7 +23,7 @@ export default function AdminPanelLayout({
               aria-label="Admin home"
               className="shrink-0"
             >
-              <Logo className="text-[22px]" />
+              <Logo className="h-6 w-auto" />
             </Link>
             <nav className="hidden items-center gap-6 sm:flex">
               <Link
@@ -61,6 +61,12 @@ export default function AdminPanelLayout({
                 className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
               >
                 Gallery
+              </Link>
+              <Link
+                href="/admin/inquiries"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Enquiries
               </Link>
               <Link
                 href="/admin/settings"

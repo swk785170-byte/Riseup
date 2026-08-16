@@ -8,13 +8,13 @@ import AboutContact from "@/components/AboutContact";
 import { getGalleryImages, getTeamMembers } from "@/lib/data/site";
 
 export const metadata: Metadata = {
-  title: "About — RISE UP MEDIA",
+  title: "About — RISEUP SOLUTIONS",
   description:
-    "Meet the small, senior team behind Rise Up Media — designers and engineers building websites and systems that grow businesses. Reach us by email or WhatsApp.",
+    "Meet the small, senior team behind Riseup Solutions — designers and engineers building websites and systems that grow businesses. Reach us by email or WhatsApp.",
   openGraph: {
-    title: "About — RISE UP MEDIA",
+    title: "About — RISEUP SOLUTIONS",
     description:
-      "The designers and engineers behind Rise Up Media, and how to reach us.",
+      "The designers and engineers behind Riseup Solutions, and how to reach us.",
     type: "website",
   },
 };

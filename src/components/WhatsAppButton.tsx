@@ -18,7 +18,7 @@ export default function WhatsAppButton() {
   if (pathname?.startsWith("/admin")) return null;
 
   const href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "Hi Rise Up Media, I'd like to talk about a project.",
+    "Hi Riseup Solutions, I'd like to talk about a project.",
   )}`;
 
   return (

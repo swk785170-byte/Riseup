@@ -123,7 +123,6 @@ function TeamCard({ member }: { member: TeamMember }) {
           <h3 className="text-lg font-semibold tracking-tight">
             {member.name}
           </h3>
-          <p className="mt-1 text-sm text-muted">{member.role}</p>
         </div>
         <span className="mt-2 h-px w-8 shrink-0 origin-left scale-x-0 bg-foreground transition-transform duration-500 ease-premium group-hover:scale-x-100" />
       </div>

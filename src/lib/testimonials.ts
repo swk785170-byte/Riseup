@@ -46,7 +46,7 @@ export const SEED_TESTIMONIALS: Testimonial[] = [
     role: "Founder, AR",
     rating: 5,
     quote:
-      "Rise Up Media rebuilt our site from the ground up and it finally looks like the business we actually are. Inquiries picked up within the first month and it hasn't slowed down since.",
+      "Riseup Solutions rebuilt our site from the ground up and it finally looks like the business we actually are. Inquiries picked up within the first month and it hasn't slowed down since.",
     avatarUrl: null,
     sortOrder: 0,
   },

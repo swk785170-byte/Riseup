@@ -8,9 +8,9 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import { getSiteSettings } from "@/lib/data/site";
 
 export const metadata: Metadata = {
-  title: "RISE UP MEDIA — We Build Websites That Grow Businesses",
+  title: "RISEUP SOLUTIONS — We Build Websites That Grow Businesses",
   description:
-    "Rise Up Media is a web development agency crafting high-performance websites, e-commerce experiences and brands that convert. Design, development, SEO and ongoing care — under one roof.",
+    "Riseup Solutions is a web development agency crafting high-performance websites, e-commerce experiences and brands that convert. Design, development, SEO and ongoing care — under one roof.",
   keywords: [
     "web development agency",
     "web design",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "Next.js agency",
   ],
   openGraph: {
-    title: "RISE UP MEDIA — We Build Websites That Grow Businesses",
+    title: "RISEUP SOLUTIONS — We Build Websites That Grow Businesses",
     description:
       "High-performance websites, e-commerce experiences and brands that convert.",
     type: "website",

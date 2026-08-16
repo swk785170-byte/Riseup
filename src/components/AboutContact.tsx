@@ -9,7 +9,7 @@ import { EASE_PREMIUM } from "@/lib/motion";
 export default function AboutContact() {
   const { email, whatsappNumber } = useSiteSettings();
   const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "Hi Rise Up Media, I'd like to talk about a project.",
+    "Hi Riseup Solutions, I'd like to talk about a project.",
   )}`;
 
   return (
@@ -68,7 +68,7 @@ export default function AboutContact() {
             target="_blank"
             rel="noopener noreferrer"
             strength={0.2}
-            ariaLabel="Message Rise Up Media on WhatsApp"
+            ariaLabel="Message Riseup Solutions on WhatsApp"
             className="group w-full rounded-full border border-foreground/25 px-8 py-4 text-sm font-semibold tracking-tight text-foreground transition-colors duration-300 hover:border-foreground hover:bg-foreground hover:text-background sm:w-auto"
           >
             <MessageCircle size={17} strokeWidth={2} />

@@ -9,11 +9,11 @@ import LMSCustomers from "@/components/LMSCustomers";
 import { getLMSProjects } from "@/lib/data/projects";
 
 export const metadata: Metadata = {
-  title: "LMS — RISE UP MEDIA",
+  title: "LMS — RISEUP SOLUTIONS",
   description:
-    "Rise Up Media's Learning Management System for modern institutions — courses, grading, smart-card attendance, paper-class digitisation and student registration in one connected platform.",
+    "The Riseup Solutions Learning Management System for modern institutions — courses, grading, smart-card attendance, paper-class digitisation and student registration in one connected platform.",
   openGraph: {
-    title: "LMS — RISE UP MEDIA",
+    title: "LMS — RISEUP SOLUTIONS",
     description:
       "A Learning Management System built for modern institutions — one connected platform for learning, records and admin.",
     type: "website",

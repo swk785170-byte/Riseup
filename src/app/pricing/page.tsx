@@ -8,11 +8,11 @@ import PricingFAQ from "@/components/PricingFAQ";
 import GetQuoteCTA from "@/components/GetQuoteCTA";
 
 export const metadata: Metadata = {
-  title: "Pricing — RISE UP MEDIA",
+  title: "Pricing — RISEUP SOLUTIONS",
   description:
-    "Transparent pricing for Rise Up Media web packages and LMS / student management systems — or a custom quote for something bespoke.",
+    "Transparent pricing for Riseup Solutions web packages and LMS / student management systems — or a custom quote for something bespoke.",
   openGraph: {
-    title: "Pricing — RISE UP MEDIA",
+    title: "Pricing — RISEUP SOLUTIONS",
     description:
       "Transparent packages for websites and school systems, plus custom quotes.",
     type: "website",

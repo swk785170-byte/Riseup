@@ -14,7 +14,7 @@ export default function AboutDescription() {
           transition={{ duration: 0.8, ease: EASE_PREMIUM }}
           className="mb-12 text-center text-[11px] font-bold tracking-[0.35em] text-muted uppercase"
         >
-          A bit about Rise Up Media
+          A bit about Riseup Solutions
         </motion.p>
 
         <motion.blockquote
@@ -43,7 +43,7 @@ export default function AboutDescription() {
           />
 
           <p className="text-[clamp(1.4rem,3vw,2.15rem)] leading-[1.35] font-medium tracking-[-0.01em] text-balance">
-            We started Rise Up Media because most websites are built to look
+            We started Riseup Solutions because most websites are built to look
             busy, not to grow a business. So we work differently — strategy
             first, obsessive craft second, and measurable results as the only
             scoreboard. Small team, senior hands, no filler: just websites that

@@ -221,23 +221,13 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Center — email */}
-        <div className="mt-12 text-center">
-          <a
-            href={`mailto:${settings.email}`}
-            className="text-base text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline md:text-lg"
-          >
-            {settings.email}
-          </a>
-        </div>
-
         {/* Divider */}
-        <div className="mt-10 border-t border-taupe" />
+        <div className="mt-12 border-t border-taupe" />
 
         {/* Bottom row — copyright + legal */}
         <div className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-charcoal">
-            © 2026 Rise Up Media. All rights reserved.
+            © 2026 Riseup Solutions. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a

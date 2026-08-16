@@ -47,23 +47,25 @@ export default function LoadingScreen({
           resolved font metrics are. */}
       <g fill="currentColor" className="text-foreground">
         <text
-          x="6"
+          x="4"
           y="112"
-          fontSize="122"
+          fontSize="126"
           fontWeight="900"
-          textLength="47"
+          letterSpacing="-4"
+          textLength="49"
           lengthAdjust="spacingAndGlyphs"
           className="font-sans lowercase"
         >
           r
         </text>
-        <circle cx="74.5" cy="30" r="13" />
+        <circle cx="74.5" cy="30" r="14" />
         <text
-          x="97"
+          x="95"
           y="112"
-          fontSize="122"
+          fontSize="126"
           fontWeight="900"
-          textLength="272"
+          letterSpacing="-4"
+          textLength="266"
           lengthAdjust="spacingAndGlyphs"
           className="font-sans lowercase"
         >

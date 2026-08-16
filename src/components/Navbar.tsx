@@ -93,11 +93,11 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            aria-label="Rise Up Media — home"
+            aria-label="Riseup Solutions — home"
             onClick={() => setOpen(false)}
             className="shrink-0"
           >
-            <Logo className="text-[26px] md:text-[32px]" />
+            <Logo className="h-7 w-auto md:h-9" priority />
           </Link>
 
           {/* Desktop links */}
