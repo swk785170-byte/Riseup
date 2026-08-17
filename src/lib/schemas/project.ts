@@ -45,6 +45,15 @@ export const projectFormSchema = z.object({
   results: z.array(resultSchema).max(6).default([]),
   tags: z.array(z.string().trim().min(1).max(40)).max(8).default([]),
   thumbnail_url: z.string().url().optional().or(z.literal("")),
+  /** Curated crop shown on card previews only. */
+  card_preview_url: z.string().url().optional().or(z.literal("")),
+  /** Backdrop behind the card mockup, e.g. "#F1EEE6". */
+  accent_bg: z
+    .string()
+    .trim()
+    .regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Use a hex colour like #F1EEE6")
+    .optional()
+    .or(z.literal("")),
   gallery_urls: z.array(z.string().url()).max(8).default([]),
   featured: z.boolean().default(false),
   is_lms: z.boolean().default(false),

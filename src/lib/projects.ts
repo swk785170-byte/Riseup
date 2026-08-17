@@ -45,6 +45,10 @@ export type Project = {
    */
   thumbnailUrl?: string | null;
   galleryUrls?: string[];
+  /** Curated crop for card previews; falls back to `thumbnailUrl`. */
+  cardPreviewUrl?: string | null;
+  /** Hex backdrop behind the card mockup; falls back to the palette default. */
+  accentBg?: string | null;
 };
 
 export const SEED_PROJECTS: Project[] = [
@@ -331,6 +335,8 @@ export type DbProject = {
   results: { value: string; label: string }[];
   tags: string[];
   thumbnail_url: string | null;
+  card_preview_url: string | null;
+  accent_bg: string | null;
   gallery_urls: string[];
   featured: boolean;
   is_lms: boolean;
@@ -421,6 +427,8 @@ export function mapRowToProject(row: DbProject): Project {
     // Carry the uploaded artwork through to the public components.
     thumbnailUrl: row.thumbnail_url,
     galleryUrls: Array.isArray(row.gallery_urls) ? row.gallery_urls : [],
+    cardPreviewUrl: row.card_preview_url,
+    accentBg: row.accent_bg,
   };
 }
 
@@ -444,6 +452,8 @@ export function seedProjectToRow(
     results: project.results,
     tags: project.tags,
     thumbnail_url: null,
+    card_preview_url: null,
+    accent_bg: null,
     gallery_urls: [],
     featured: Boolean(project.featured),
     is_lms: project.filters.includes("lms"),

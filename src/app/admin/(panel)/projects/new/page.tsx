@@ -15,6 +15,8 @@ const emptyProject: ProjectFormValues = {
   results: [],
   tags: [],
   thumbnail_url: "",
+  card_preview_url: "",
+  accent_bg: "",
   gallery_urls: [],
   featured: false,
   is_lms: false,

@@ -34,6 +34,8 @@ function toRow(values: ProjectFormValues) {
     results: values.results,
     tags: values.tags,
     thumbnail_url: values.thumbnail_url ? values.thumbnail_url : null,
+    card_preview_url: values.card_preview_url ? values.card_preview_url : null,
+    accent_bg: values.accent_bg ? values.accent_bg : null,
     gallery_urls: values.gallery_urls,
     featured: values.featured,
     is_lms: values.is_lms,

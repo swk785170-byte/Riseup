@@ -46,6 +46,8 @@ export default function ProjectForm({
 
   const results = useFieldArray({ control, name: "results" });
   const tags = watch("tags") ?? [];
+  // Live swatch next to the hex input; falls back to the palette default.
+  const accentPreview = (watch("accent_bg") || "").trim() || "#F1EEE6";
 
   async function onSubmit(values: ProjectFormValues) {
     setServerError(null);
@@ -302,12 +304,61 @@ export default function ProjectForm({
           Images
         </h2>
         <div className="flex flex-col gap-6">
+          <div>
+            <Controller
+              control={control}
+              name="card_preview_url"
+              render={({ field }) => (
+                <ImageUpload
+                  label="Card preview"
+                  multiple={false}
+                  value={field.value ? [field.value] : []}
+                  onChange={(urls) => field.onChange(urls[0] ?? "")}
+                />
+              )}
+            />
+            <p className="mt-2 max-w-md text-xs text-muted">
+              <strong className="font-semibold text-charcoal">
+                Card Preview:
+              </strong>{" "}
+              upload a focused crop of the best-looking section of this project
+              (hero, standout component). Full page screenshots go in the
+              gallery below. If left empty, the thumbnail is used instead.
+            </p>
+          </div>
+
+          <div>
+            <label htmlFor="accent_bg" className="admin-label">
+              Card backdrop colour
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                id="accent_bg"
+                className="admin-input max-w-[10rem]"
+                placeholder="#F1EEE6"
+                {...register("accent_bg")}
+              />
+              <span
+                aria-hidden
+                className="h-9 w-9 shrink-0 rounded-lg border border-border"
+                style={{ backgroundColor: accentPreview }}
+              />
+            </div>
+            <FieldError message={errors.accent_bg?.message} />
+            <p className="mt-1.5 max-w-md text-xs text-muted">
+              Sits behind the browser mockup on the card. Use a tint from the
+              project&rsquo;s brand so dark and light screenshots each get an
+              intentional backdrop. Defaults to{" "}
+              <code className="font-mono">#F1EEE6</code>.
+            </p>
+          </div>
+
           <Controller
             control={control}
             name="thumbnail_url"
             render={({ field }) => (
               <ImageUpload
-                label="Thumbnail"
+                label="Thumbnail (full screenshot)"
                 multiple={false}
                 value={field.value ? [field.value] : []}
                 onChange={(urls) => field.onChange(urls[0] ?? "")}

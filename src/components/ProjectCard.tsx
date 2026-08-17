@@ -3,11 +3,19 @@
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { BrowserMock } from "./ProjectMock";
+import BrowserMockup from "./BrowserMockup";
 import type { Project } from "@/lib/projects";
 
 /**
- * Shared project thumbnail card — width-agnostic so it works in the homepage's
- * horizontal scroll row and the /projects grid alike. Fills its container.
+ * Shared project card — width-agnostic so it works in the homepage's horizontal
+ * scroll row and the /projects grid alike, which keeps the two from drifting.
+ *
+ * Preview source order: the curated `cardPreviewUrl` crop wins; otherwise the
+ * full `thumbnailUrl`; otherwise the CSS browser mock. So projects render
+ * cleanly before the team backfills curated crops.
+ *
+ * Note this is the CARD treatment only — the case-study modal still shows every
+ * gallery image uncropped via object-contain.
  */
 export default function ProjectCard({
   project,
@@ -16,10 +24,9 @@ export default function ProjectCard({
   project: Project;
   onOpen: (project: Project) => void;
 }) {
-  // Uploaded thumbnail wins; if it's missing or fails to load we fall back to
-  // the CSS browser mock rather than showing a broken image.
   const [imageFailed, setImageFailed] = useState(false);
-  const showImage = Boolean(project.thumbnailUrl) && !imageFailed;
+  const preview = project.cardPreviewUrl || project.thumbnailUrl || null;
+  const showImage = Boolean(preview) && !imageFailed;
 
   return (
     <button
@@ -28,25 +35,24 @@ export default function ProjectCard({
       aria-label={`Open ${project.name} case study`}
       className="group block w-full text-left"
     >
-      {/* bg-surface letterboxes uncropped images so the grid stays aligned */}
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-surface">
-        <div className="h-full w-full grayscale-[0.35] transition-all duration-700 ease-premium group-hover:scale-[1.04] group-hover:grayscale-0">
-          {showImage && project.thumbnailUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={project.thumbnailUrl}
-              alt={project.name}
-              loading="lazy"
-              onError={() => setImageFailed(true)}
-              className="h-full w-full object-contain"
-            />
-          ) : (
+      {/* Full-bleed: the accent backdrop fills the card area edge-to-edge and
+          shares its radius — no gap or inner padding around the artwork. */}
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border transition-shadow duration-500 ease-premium group-hover:shadow-[0_24px_50px_-24px_rgba(11,11,11,0.3)]">
+        {showImage && preview ? (
+          <BrowserMockup
+            src={preview}
+            alt={project.name}
+            accentBg={project.accentBg}
+            onImageError={() => setImageFailed(true)}
+          />
+        ) : (
+          <BrowserMockup alt={project.name} accentBg={project.accentBg}>
             <BrowserMock tint={project.tint} variant={project.mock} />
-          )}
-        </div>
+          </BrowserMockup>
+        )}
 
         {/* Hover veil + view pill */}
-        <div className="absolute inset-0 flex items-center justify-center bg-foreground/0 transition-colors duration-500 group-hover:bg-foreground/15">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-foreground/0 transition-colors duration-500 group-hover:bg-foreground/15">
           <span className="flex translate-y-3 items-center gap-2 rounded-full bg-background px-6 py-3 text-[11px] font-bold tracking-[0.2em] uppercase opacity-0 shadow-lg transition-all duration-500 ease-premium group-hover:translate-y-0 group-hover:opacity-100">
             View Project
             <ArrowUpRight size={14} strokeWidth={2.5} />

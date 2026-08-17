@@ -35,6 +35,8 @@ export default async function EditProjectPage({
     results: row.results ?? [],
     tags: row.tags ?? [],
     thumbnail_url: row.thumbnail_url ?? "",
+    card_preview_url: row.card_preview_url ?? "",
+    accent_bg: row.accent_bg ?? "",
     gallery_urls: row.gallery_urls ?? [],
     featured: row.featured,
     is_lms: row.is_lms,
