@@ -1,6 +1,10 @@
 import Image from "next/image";
 
-/** Intrinsic size of the cropped wordmark asset (public/logo/riseup-logo.webp). */
+/**
+ * Intrinsic size of the wordmark asset (public/logo/riseup-logo.png).
+ * Transparent PNG, so it sits on the warm #FFFDF8 background with no white box.
+ * next/image re-encodes it to WebP/AVIF on delivery.
+ */
 const LOGO_WIDTH = 436;
 const LOGO_HEIGHT = 190;
 
@@ -20,7 +24,7 @@ export default function Logo({
 }) {
   return (
     <Image
-      src="/logo/riseup-logo.webp"
+      src="/logo/riseup-logo.png"
       alt={title}
       width={LOGO_WIDTH}
       height={LOGO_HEIGHT}
