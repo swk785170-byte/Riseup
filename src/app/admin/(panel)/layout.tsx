@@ -2,17 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import LogoutButton from "@/components/admin/LogoutButton";
+import NotificationBell from "@/components/admin/NotificationBell";
+import { getUnhandledInquiries } from "@/lib/data/inquiries";
 
 export const metadata: Metadata = {
   title: "Admin — Riseup Solutions",
   robots: { index: false, follow: false },
 };
 
-export default function AdminPanelLayout({
+export default async function AdminPanelLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Initial state for the bell; Realtime keeps it current from here.
+  const outstanding = await getUnhandledInquiries();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
@@ -76,7 +81,10 @@ export default function AdminPanelLayout({
               </Link>
             </nav>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-3">
+            <NotificationBell initialItems={outstanding} />
+            <LogoutButton />
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-5 py-10">{children}</main>
