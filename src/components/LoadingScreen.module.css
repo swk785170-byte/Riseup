@@ -1,7 +1,12 @@
 /* Scoped styles for the riseup loading animation. */
 
+/*
+ * Default widened 200px → 220px: Montserrat's wider letterforms made the
+ * viewBox 440×150 (was 375×150), so at the old width the wordmark rendered
+ * shorter. This keeps its on-screen height roughly where it was.
+ */
 .wrap {
-  width: min(var(--logo-width, 200px), 82vw);
+  width: min(var(--logo-width, 220px), 82vw);
   height: auto;
   display: block;
 }

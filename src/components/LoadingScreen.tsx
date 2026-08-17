@@ -1,20 +1,44 @@
 "use client";
 
+import { Montserrat } from "next/font/google";
 import styles from "./LoadingScreen.module.css";
+
+/**
+ * Scoped to this component only — applied via inline `fontFamily` on the two
+ * <text> runs, so it never leaks into the rest of the site (which stays on
+ * Satoshi) and can't collide with Tailwind's `font-sans` utility.
+ */
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["800", "900"],
+  display: "swap",
+});
+
+/** Black (900) — matches the solid weight of the arrow mark. Swap to "800". */
+const WORDMARK_WEIGHT = 900;
+
+/**
+ * Horizontal nudge applied to the whole "i" glyph (head dot + travelling
+ * arrows) so it still sits between "r" and "seup" now that Montserrat's wider
+ * letterforms push them apart. Only the x position moves — the arrow path, the
+ * clip window's size and the animation are untouched, and because the clip
+ * lives inside this same group its relationship to the arrows is preserved
+ * exactly.
+ */
+const I_GLYPH_NUDGE_X = 12;
 
 /**
  * The "riseup" loading mark: a static wordmark with the two figure arrows
  * continuously travelling upward on a seamless loop (treadmill/escalator).
  *
- * Geometry is fixed to the source artwork:
+ * Arrow geometry is fixed to the source artwork and must not change:
  *   arrow path   M74.5 0 L87.5 16 L87.5 31.5 L74.5 16 L61.5 31.5 L61.5 16 Z
  *   clip window  x=55 y=48 w=40 h=64.5   (shows ~2 arrows at a time)
  *   copies at    y = 15, 48, 81, 114     (33 apart → keyframe travels -33)
  *
- * Note: the static wordmark is drawn inline rather than via `<image href=…>`.
- * An externally referenced SVG cannot use the page's webfont, so an <image>
- * layer would render the wordmark in a fallback face; inlining keeps it in
- * Satoshi and keeps the arrow slot pixel-accurate to the geometry above.
+ * The wordmark is real <text>, not a raster layer, so the typeface is genuinely
+ * swappable. `textLength` pins each run's width so the glyphs can never drift
+ * into the arrow window whatever the resolved font metrics turn out to be.
  */
 export default function LoadingScreen({
   className = "",
@@ -23,11 +47,16 @@ export default function LoadingScreen({
   className?: string;
   label?: string;
 }) {
+  const textStyle = {
+    fontFamily: montserrat.style.fontFamily,
+    fontWeight: WORDMARK_WEIGHT,
+  } as const;
+
   return (
     <svg
       role="status"
       aria-label={label}
-      viewBox="0 0 375 150"
+      viewBox="0 0 440 150"
       className={`${styles.wrap} ${className}`}
     >
       <defs>
@@ -41,45 +70,46 @@ export default function LoadingScreen({
       </defs>
 
       {/* Static wordmark: "r" + head dot + "seup" (the stem is the arrows).
-          Font size is set so the letters' x-height matches the arrow stem
-          (y 48 → 112.5), and `textLength` pins each run's exact width so the
-          glyphs can never drift into the arrow window at x 55–95, whatever the
-          resolved font metrics are. */}
+          Font size keeps the letters' x-height aligned with the arrow stem
+          (y 48 → 112.5); Montserrat's x-height at 126px is ~65, matching the
+          64.5-tall clip window. */}
       <g fill="currentColor" className="text-foreground">
         <text
-          x="4"
+          x="6"
           y="112"
           fontSize="126"
-          fontWeight="900"
-          letterSpacing="-4"
-          textLength="49"
+          letterSpacing="-3"
+          textLength="58"
           lengthAdjust="spacingAndGlyphs"
-          className="font-sans lowercase"
+          style={textStyle}
+          className="lowercase"
         >
           r
         </text>
-        <circle cx="74.5" cy="30" r="14" />
         <text
-          x="95"
+          x="104"
           y="112"
           fontSize="126"
-          fontWeight="900"
-          letterSpacing="-4"
-          textLength="266"
+          letterSpacing="-3"
+          textLength="321"
           lengthAdjust="spacingAndGlyphs"
-          className="font-sans lowercase"
+          style={textStyle}
+          className="lowercase"
         >
           seup
         </text>
       </g>
 
-      {/* Travelling arrows, clipped to the stem window */}
-      <g clipPath="url(#riseup-arrow-window)">
-        <g className={styles.arrows} fill="currentColor">
-          <use href="#riseup-arrow" y="15" />
-          <use href="#riseup-arrow" y="48" />
-          <use href="#riseup-arrow" y="81" />
-          <use href="#riseup-arrow" y="114" />
+      {/* The "i": static head dot + travelling arrows, moved as one unit. */}
+      <g transform={`translate(${I_GLYPH_NUDGE_X}, 0)`}>
+        <circle cx="74.5" cy="30" r="14" fill="currentColor" />
+        <g clipPath="url(#riseup-arrow-window)">
+          <g className={styles.arrows} fill="currentColor">
+            <use href="#riseup-arrow" y="15" />
+            <use href="#riseup-arrow" y="48" />
+            <use href="#riseup-arrow" y="81" />
+            <use href="#riseup-arrow" y="114" />
+          </g>
         </g>
       </g>
     </svg>
