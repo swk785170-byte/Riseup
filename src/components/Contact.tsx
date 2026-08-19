@@ -1,24 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import MagneticButton from "./MagneticButton";
+import { motion } from "framer-motion";
 import ContactForm from "./ContactForm";
 import { EASE_PREMIUM } from "@/lib/motion";
 
+/**
+ * Closing contact section. The form is always visible inline (no "Get a Quote"
+ * gate), laid out beside the headline on wide screens and stacked beneath it on
+ * narrow ones. The switch happens at `lg` rather than `md` so tablet portrait
+ * gets the full width instead of squeezing Name/Email into a half column.
+ */
 export default function Contact() {
-  const [showForm, setShowForm] = useState(false);
-  const formRef = useRef<HTMLDivElement | null>(null);
-
-  // Reveal the form, then bring it into view once it has been laid out.
-  function openForm() {
-    setShowForm(true);
-    requestAnimationFrame(() =>
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
-    );
-  }
-
   return (
     <section
       id="contact"
@@ -35,66 +27,43 @@ export default function Contact() {
         <div className="animate-float-b absolute top-[55%] left-[38%] h-56 w-56 rounded-full bg-taupe/40 blur-3xl" />
       </div>
 
-      <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-5 py-32 text-center md:px-10 md:py-44">
-        <motion.p
-          initial={{ opacity: 0, y: 18 }}
+      <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-5 py-28 md:px-10 md:py-36 lg:grid-cols-2 lg:gap-16">
+        {/* Left — eyebrow + headline only */}
+        <div className="text-center lg:text-left">
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10% 0px" }}
+            transition={{ duration: 0.8, ease: EASE_PREMIUM }}
+            className="mb-8 flex items-center justify-center gap-2.5 text-[11px] font-bold tracking-[0.3em] text-accent uppercase lg:justify-start"
+          >
+            <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+            Ready when you are
+          </motion.p>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 34 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10% 0px" }}
+            transition={{ duration: 1, delay: 0.08, ease: EASE_PREMIUM }}
+            className="text-[clamp(2.4rem,6vw,5rem)] leading-[0.98] font-medium tracking-[-0.03em] text-balance text-foreground"
+          >
+            Let&rsquo;s Take
+            <br />
+            You Online.
+          </motion.h2>
+        </div>
+
+        {/* Right — the form, always visible */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 0.8, ease: EASE_PREMIUM }}
-          className="mb-8 flex items-center gap-2.5 text-[11px] font-bold tracking-[0.3em] text-accent uppercase"
+          transition={{ duration: 0.9, delay: 0.16, ease: EASE_PREMIUM }}
+          className="w-full"
         >
-          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          Ready when you are
-        </motion.p>
-
-        <motion.h2
-          initial={{ opacity: 0, y: 34 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 1, delay: 0.08, ease: EASE_PREMIUM }}
-          className="text-[clamp(2.6rem,7.5vw,6.75rem)] leading-[0.98] font-medium tracking-[-0.03em] text-balance text-foreground"
-        >
-          Let&rsquo;s Take
-          <br />
-          You Online.
-        </motion.h2>
-
-        <AnimatePresence initial={false} mode="wait">
-          {!showForm && (
-            <motion.div
-              key="cta"
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.6, ease: EASE_PREMIUM }}
-              className="mt-12"
-            >
-              <MagneticButton
-                onClick={openForm}
-                strength={0.4}
-                className="rounded-full bg-accent px-12 py-5 text-[13px] font-bold tracking-[0.2em] text-background uppercase shadow-[0_20px_50px_-20px_rgba(11,11,11,0.45)] transition-colors duration-300 hover:bg-charcoal"
-              >
-                Get a Quote
-                <ArrowUpRight size={17} strokeWidth={2.5} />
-              </MagneticButton>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {showForm && (
-            <motion.div
-              ref={formRef}
-              key="form"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: EASE_PREMIUM }}
-              className="mt-12 w-full max-w-2xl"
-            >
-              <ContactForm />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <ContactForm />
+        </motion.div>
       </div>
     </section>
   );

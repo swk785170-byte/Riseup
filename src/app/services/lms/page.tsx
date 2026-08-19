@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LMSHero from "@/components/LMSHero";
-import SmartCardFeature from "@/components/SmartCardFeature";
 import LMSServices from "@/components/LMSServices";
-import LMSTechStack from "@/components/LMSTechStack";
+import LMSFeatures from "@/components/LMSFeatures";
+import LMSWhyUs from "@/components/LMSWhyUs";
 import LMSCustomers from "@/components/LMSCustomers";
 import { getLMSProjects } from "@/lib/data/projects";
 
@@ -28,9 +28,9 @@ export default async function LMSPage() {
       <Navbar />
       <main>
         <LMSHero />
-        <SmartCardFeature />
         <LMSServices />
-        <LMSTechStack />
+        <LMSFeatures />
+        <LMSWhyUs />
         <LMSCustomers projects={projects} />
       </main>
       <Footer />

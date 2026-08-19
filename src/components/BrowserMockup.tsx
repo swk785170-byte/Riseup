@@ -24,8 +24,10 @@ const MAX_TILT_DEG = 5;
 
 /**
  * A project preview presented inside a minimal browser window: thin chrome bar
- * with three dots, rounded frame, and a soft shadow so it reads as an object
- * sitting above the card rather than a flat rectangle.
+ * with three dots, rounded frame, and a soft shadow.
+ *
+ * `bare` drops the surrounding backdrop and padding so the frame *is* the card,
+ * sitting directly on the section background with no outline or card fill.
  *
  * Performance: the hover tilt writes `transform` straight to the DOM inside a
  * single rAF, so pointer movement never triggers a React render. Listeners are
@@ -38,7 +40,9 @@ export default function BrowserMockup({
   accentBg = DEFAULT_ACCENT_BG,
   onImageError,
   children,
+  overlay,
   tilt = true,
+  bare = false,
 }: {
   /** Preview image. Omit and pass `children` to render custom artwork. */
   src?: string | null;
@@ -46,10 +50,16 @@ export default function BrowserMockup({
   accentBg?: string | null;
   onImageError?: () => void;
   children?: React.ReactNode;
+  /** Rendered inside the frame, so it tilts and clips with it. */
+  overlay?: React.ReactNode;
   tilt?: boolean;
+  /** No backdrop/padding — the frame itself is the card. */
+  bare?: boolean;
 }) {
   const bg = accentBg?.trim() || DEFAULT_ACCENT_BG;
-  const darkChrome = isDark(bg);
+  // With no backdrop the frame sits on the light page surface, so keep the
+  // chrome light regardless of the project's stored accent.
+  const darkChrome = bare ? false : isDark(bg);
 
   const frameRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number>(0);
@@ -75,7 +85,6 @@ export default function BrowserMockup({
       const el = frameRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      // -0.5 … 0.5 within the frame
       const px = (e.clientX - rect.left) / rect.width - 0.5;
       const py = (e.clientY - rect.top) / rect.height - 0.5;
 
@@ -102,13 +111,17 @@ export default function BrowserMockup({
     <div
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      style={{ backgroundColor: bg }}
-      className="flex h-full w-full items-center justify-center p-5 md:p-7"
+      style={bare ? undefined : { backgroundColor: bg }}
+      className={
+        bare
+          ? "h-full w-full"
+          : "flex h-full w-full items-center justify-center p-5 md:p-7"
+      }
     >
       <div
         ref={frameRef}
         style={{ transformStyle: "preserve-3d" }}
-        className="w-full overflow-hidden rounded-lg border border-black/10 bg-white shadow-[0_18px_44px_-12px_rgba(11,11,11,0.35)] will-change-transform"
+        className="relative w-full overflow-hidden rounded-lg border border-black/10 bg-white shadow-[0_18px_44px_-12px_rgba(11,11,11,0.35)] will-change-transform"
       >
         {/* Window chrome */}
         <div
@@ -147,6 +160,8 @@ export default function BrowserMockup({
             children
           )}
         </div>
+
+        {overlay}
       </div>
     </div>
   );
