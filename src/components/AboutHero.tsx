@@ -35,7 +35,7 @@ export default function AboutHero() {
           A small, senior studio of designers and engineers who sweat the
           details most agencies skip. We take on a handful of clients at a time
           — and treat every build like it carries our name.
-        </motion.p> */}
+        </motion.p> */} 
       </div>
     </section>
   );

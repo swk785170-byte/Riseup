@@ -29,7 +29,7 @@ export default function ProjectsHero() {
           Work we&rsquo;re proud to have built.
         </motion.h1>
 
-        <motion.p
+        {/* <motion.p
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.18, ease: EASE_PREMIUM }}
@@ -38,7 +38,7 @@ export default function ProjectsHero() {
           The full archive — storefronts, web apps, brand sites and search
           engines rebuilt. Every one shipped with numbers attached. Filter by
           discipline, or open any project for the full case study.
-        </motion.p>
+        </motion.p> */}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
