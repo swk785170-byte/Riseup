@@ -305,3 +305,71 @@ html.lenis body {
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Smart Systems ecosystem diagram — flip cards + radial placement    */
+/* ------------------------------------------------------------------ */
+
+.flip-card {
+  perspective: 1000px;
+}
+.flip-card-inner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.flip-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Radial placement is desktop-only: below `lg` the nodes stay in normal flow
+   and stack vertically, so `--x`/`--y` are simply ignored. Percentages have to
+   live in a custom property because inline styles can't be breakpoint-scoped. */
+@media (min-width: 64rem) {
+  .sms-node {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Reduced motion: swap the 3D flip for a plain cross-fade of the two faces. */
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner,
+  .flip-card-inner.flipped {
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+  .flip-card-front,
+  .flip-card-back {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transition: opacity 0.18s linear;
+  }
+  .flip-card-back {
+    transform: none;
+    opacity: 0;
+  }
+  .flip-card-inner.flipped .flip-card-front {
+    opacity: 0;
+  }
+  .flip-card-inner.flipped .flip-card-back {
+    opacity: 1;
+  }
+}

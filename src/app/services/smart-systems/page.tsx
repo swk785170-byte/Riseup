@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SmsLogo from "@/components/SmsLogo";
+import SmsHero from "@/components/SmsHero";
+import SmartSystemsDiagram from "@/components/SmartSystemsDiagram";
+import SmartCardFeature from "@/components/SmartCardFeature";
+import FutureSystemsTeaser from "@/components/FutureSystemsTeaser";
 
 export const metadata: Metadata = {
   title: "Smart Systems — RISEUP SOLUTIONS",
   description:
-    "The Smart Management System (SMS) from Riseup Solutions — coming soon.",
+    "SMS is the Riseup Solutions Smart Management System — the umbrella platform connecting LMS, Smart Card, Paper Class, Parent SMS and Income Management into one ecosystem.",
   openGraph: {
     title: "Smart Systems — RISEUP SOLUTIONS",
-    description: "Something new from Riseup Solutions — coming soon.",
+    description:
+      "One ecosystem, every system connected — the Riseup Solutions Smart Management System.",
     type: "website",
   },
 };
@@ -19,17 +23,12 @@ export default function SmartSystemsPage() {
     <>
       <Navbar />
       <main>
-        <section className="flex min-h-screen flex-col items-center justify-center px-5 py-32 text-center md:px-10">
-          <SmsLogo className="text-[44px] md:text-[60px]" />
-
-          <h1 className="mt-12 text-[clamp(2.5rem,8vw,5.5rem)] leading-[1.02] font-medium tracking-[-0.03em]">
-            Coming Soon.
-          </h1>
-
-          <p className="mt-6 max-w-md text-base leading-relaxed text-muted md:text-lg">
-            We&rsquo;re building something new here — check back soon.
-          </p>
-        </section>
+        <SmsHero />
+        {/* Full-bleed by design — the only section on this page allowed to
+            break out of the standard content width. */}
+        <SmartSystemsDiagram />
+        <SmartCardFeature />
+        <FutureSystemsTeaser />
       </main>
       <Footer />
     </>
