@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SmsHero from "@/components/SmsHero";
 import SmartSystemsDiagram from "@/components/SmartSystemsDiagram";
 import SmartCardFeature from "@/components/SmartCardFeature";
 import FutureSystemsTeaser from "@/components/FutureSystemsTeaser";
@@ -23,9 +22,10 @@ export default function SmartSystemsPage() {
     <>
       <Navbar />
       <main>
-        <SmsHero />
-        {/* Full-bleed by design — the only section on this page allowed to
-            break out of the standard content width. */}
+        {/* Hero and ecosystem are one component: the SMS logo is a single
+            element that scrubs from the hero into the diagram's hub slot, so
+            they cannot be separate sections. Full-bleed by design — the only
+            part of this page that breaks out of the standard content width. */}
         <SmartSystemsDiagram />
         <SmartCardFeature />
         <FutureSystemsTeaser />

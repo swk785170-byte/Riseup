@@ -5,48 +5,26 @@ import SmsLogo from "./SmsLogo";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 /**
- * Text-first header for /services/smart-systems — no canvas or shader
- * background, matching the LMS page's calm register. The mark is rendered by
- * `SmsLogo` (the component form of public/logo/sms-logo.svg) so it inherits the
- * page's type and `currentColor` instead of loading a second copy as an image.
+ * Logo-only hero — no headline, no supporting copy. Used on the *static* path
+ * only (below `lg`, or when the visitor asks for reduced motion), where there
+ * is no scroll-scrubbed handoff. On the animated desktop path this hero state
+ * is the diagram stage at scroll progress 0, so the logo is a single element
+ * rather than a hero copy plus a hub copy.
  */
 export default function SmsHero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden border-b border-border"
+      className="flex min-h-screen items-center justify-center px-5 md:px-10"
     >
-      <div className="mx-auto flex max-w-4xl flex-col items-center px-5 pt-36 pb-20 text-center md:px-10 md:pt-48 md:pb-28">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE_PREMIUM }}
-        >
-          <SmsLogo className="text-[38px] md:text-[52px]" />
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.1, ease: EASE_PREMIUM }}
-          className="mt-12 text-[clamp(2.4rem,6.5vw,5rem)] leading-[1.0] font-medium tracking-[-0.03em] text-balance"
-        >
-          One Ecosystem.
-          <br />
-          Every System Connected.
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2, ease: EASE_PREMIUM }}
-          className="mt-8 max-w-xl text-base leading-relaxed text-muted md:text-lg"
-        >
-          SMS is the Riseup Solutions umbrella platform — the layer that ties
-          every system below into one connected whole, so your institution runs
-          on shared data instead of separate tools.
-        </motion.p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: EASE_PREMIUM }}
+      >
+        {/* ~36vw on desktop, floored so it stays substantial on phones. */}
+        <SmsLogo className="text-[clamp(34px,7.2vw,88px)]" />
+      </motion.div>
     </section>
   );
 }

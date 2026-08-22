@@ -337,13 +337,16 @@ html.lenis body {
 }
 
 /* Radial placement is desktop-only: below `lg` the nodes stay in normal flow
-   and stack vertically, so `--x`/`--y` are simply ignored. Percentages have to
-   live in a custom property because inline styles can't be breakpoint-scoped. */
+   and stack vertically, so `--dx`/`--dy` are simply ignored. Offsets are px
+   from the hub at the cluster centre, not percentages of the box — that keeps
+   the cluster a fixed, compact size instead of stretching with the viewport.
+   They live in custom properties because inline styles can't be
+   breakpoint-scoped. */
 @media (min-width: 64rem) {
   .sms-node {
     position: absolute;
-    left: var(--x);
-    top: var(--y);
+    left: calc(50% + var(--dx));
+    top: calc(50% + var(--dy));
     transform: translate(-50%, -50%);
   }
 }
