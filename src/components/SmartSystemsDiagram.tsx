@@ -397,10 +397,13 @@ export default function SmartSystemsDiagram() {
       logo.style.transform = "none";
       const lr = logo.getBoundingClientRect();
       const sr = stage.getBoundingClientRect();
+      // Derive the aspect from the measured lockup rather than hard-coding it,
+      // so swapping the logo asset can't silently break the height guard.
+      const aspect = lr.height > 0 ? lr.width / lr.height : 2.9;
       const heroW = Math.min(
         window.innerWidth * 0.36,
-        620,
-        (window.innerHeight - 120) * 2.1,
+        720,
+        (window.innerHeight - 120) * aspect,
       );
       startRef.current = {
         scale: lr.width > 0 ? heroW / lr.width : 1,

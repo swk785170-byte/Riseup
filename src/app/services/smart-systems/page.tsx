@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import SmartSystemsDiagram from "@/components/SmartSystemsDiagram";
 import SmartCardFeature from "@/components/SmartCardFeature";
 import FutureSystemsTeaser from "@/components/FutureSystemsTeaser";
+import Contact from "@/components/Contact";
 
 export const metadata: Metadata = {
   title: "Smart Systems — RISEUP SOLUTIONS",
@@ -29,6 +30,7 @@ export default function SmartSystemsPage() {
         <SmartSystemsDiagram />
         <SmartCardFeature />
         <FutureSystemsTeaser />
+        <Contact />
       </main>
       <Footer />
     </>

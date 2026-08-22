@@ -27,7 +27,7 @@ export default function SmartSystemsHero() {
           transition={{ duration: 0.8, delay: 0.06, ease: EASE_PREMIUM }}
           className="mb-10"
         >
-          <SmsLogo className="text-[44px] md:text-[64px]" />
+          <SmsLogo className="h-16 w-auto md:h-24" />
         </motion.div>
 
         <motion.h1

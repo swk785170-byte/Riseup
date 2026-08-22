@@ -20,7 +20,7 @@ const SmsLogoHub = forwardRef<HTMLSpanElement, { className?: string }>(
         // is what keeps it visually centred throughout the travel.
         className={`inline-block origin-center will-change-transform ${className}`}
       >
-        <SmsLogo className="text-[26px]" />
+        <SmsLogo className="h-[68px] w-auto" />
       </span>
     );
   },

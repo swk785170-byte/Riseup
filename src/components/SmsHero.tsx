@@ -23,7 +23,7 @@ export default function SmsHero() {
         transition={{ duration: 1, ease: EASE_PREMIUM }}
       >
         {/* ~36vw on desktop, floored so it stays substantial on phones. */}
-        <SmsLogo className="text-[clamp(34px,7.2vw,88px)]" />
+        <SmsLogo priority className="h-[clamp(52px,12vw,168px)] w-auto" />
       </motion.div>
     </section>
   );
