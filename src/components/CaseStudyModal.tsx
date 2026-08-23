@@ -59,6 +59,22 @@ export default function CaseStudyModal({
   const isHome = pathname === "/";
   const gallery = project.galleryUrls ?? [];
 
+  /*
+   * Every one of these is optional in the admin form, so a project can be
+   * saved with any of them blank. Render a section only when it has content —
+   * otherwise the heading (and, for results, its bordered list rule) shows up
+   * over an empty space. Rows are guarded too, in case one was saved empty.
+   */
+  const summary = project.summary.trim();
+  const challenge = project.challenge.trim();
+  const solution = project.solution.trim();
+  const tags = project.tags.filter((tag) => tag.trim().length > 0);
+  const results = project.results.filter(
+    (r) => r.value.trim().length > 0 && r.label.trim().length > 0,
+  );
+  const hasDetail = Boolean(challenge || solution || tags.length > 0);
+  const hasResults = results.length > 0;
+
   // Escape to close
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -130,9 +146,11 @@ export default function CaseStudyModal({
             <h3 className="mt-3 text-4xl font-medium tracking-tight md:text-6xl">
               {project.name}
             </h3>
-            <p className="mt-3 max-w-2xl text-base text-muted md:text-lg">
-              {project.summary}
-            </p>
+            {summary && (
+              <p className="mt-3 max-w-2xl text-base text-muted md:text-lg">
+                {summary}
+              </p>
+            )}
 
             {/* Hero artwork — uploaded thumbnail, else the CSS mock.
                 Letterboxed so the whole image is visible, never cropped. */}
@@ -145,52 +163,74 @@ export default function CaseStudyModal({
               />
             </div>
 
-            <div className="mt-12 grid gap-12 md:grid-cols-[1.4fr_1fr] md:gap-16">
-              <div className="flex flex-col gap-10">
-                <div>
-                  <h4 className="text-[12px] font-bold tracking-[0.25em] text-muted uppercase">
-                    The Challenge
-                  </h4>
-                  <p className="mt-4 leading-relaxed text-foreground/85">
-                    {project.challenge}
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-[12px] font-bold tracking-[0.25em] text-muted uppercase">
-                    The Solution
-                  </h4>
-                  <p className="mt-4 leading-relaxed text-foreground/85">
-                    {project.solution}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold tracking-wider text-foreground/70 uppercase"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            {(hasDetail || hasResults) && (
+              <div
+                /* Drop to one column when only one side has content, so the
+                   remaining copy isn't squeezed into a narrow column beside a
+                   gap where the other section would have been. */
+                className={`mt-12 grid gap-12 md:gap-16 ${
+                  hasDetail && hasResults ? "md:grid-cols-[1.4fr_1fr]" : ""
+                }`}
+              >
+                {hasDetail && (
+                  <div className="flex flex-col gap-10">
+                    {challenge && (
+                      <div>
+                        <h4 className="text-[12px] font-bold tracking-[0.25em] text-muted uppercase">
+                          The Challenge
+                        </h4>
+                        <p className="mt-4 leading-relaxed text-foreground/85">
+                          {challenge}
+                        </p>
+                      </div>
+                    )}
+                    {solution && (
+                      <div>
+                        <h4 className="text-[12px] font-bold tracking-[0.25em] text-muted uppercase">
+                          The Solution
+                        </h4>
+                        <p className="mt-4 leading-relaxed text-foreground/85">
+                          {solution}
+                        </p>
+                      </div>
+                    )}
+                    {tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold tracking-wider text-foreground/70 uppercase"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
-              <div>
-                <h4 className="text-[12px] font-bold tracking-[0.25em] text-muted uppercase">
-                  The Results
-                </h4>
-                <ul className="mt-4 divide-y divide-border border-y border-border">
-                  {project.results.map((r) => (
-                    <li key={r.label} className="flex items-baseline gap-4 py-5">
-                      <span className="min-w-24 text-3xl font-medium tracking-tight text-accent">
-                        {r.value}
-                      </span>
-                      <span className="text-sm text-muted">{r.label}</span>
-                    </li>
-                  ))}
-                </ul>
+                {hasResults && (
+                  <div>
+                    <h4 className="text-[12px] font-bold tracking-[0.25em] text-muted uppercase">
+                      The Results
+                    </h4>
+                    <ul className="mt-4 divide-y divide-border border-y border-border">
+                      {results.map((r, i) => (
+                        <li
+                          key={`${r.label}-${i}`}
+                          className="flex items-baseline gap-4 py-5"
+                        >
+                          <span className="min-w-24 text-3xl font-medium tracking-tight text-accent">
+                            {r.value}
+                          </span>
+                          <span className="text-sm text-muted">{r.label}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
             {/* Every uploaded gallery image, uncropped. Omitted entirely when
                 the project has no gallery beyond its thumbnail. */}

@@ -18,9 +18,11 @@ const SmsLogoHub = forwardRef<HTMLSpanElement, { className?: string }>(
         ref={ref}
         // `origin-center` so the scrub scales about the lockup's middle, which
         // is what keeps it visually centred throughout the travel.
-        className={`inline-block origin-center will-change-transform ${className}`}
+        className={`block w-full origin-center will-change-transform ${className}`}
       >
-        <SmsLogo className="h-[68px] w-auto" />
+        {/* Sized by its container (the 280px hub box) so it stays proportional
+            on narrow screens rather than overflowing at a fixed height. */}
+        <SmsLogo className="h-auto w-full" />
       </span>
     );
   },

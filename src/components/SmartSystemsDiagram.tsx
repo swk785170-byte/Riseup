@@ -45,16 +45,16 @@ type SystemNode = {
    between cards tightens. The cluster is a fixed size so it stays a compact
    group instead of stretching to fill the full-bleed section. */
 const CLUSTER_W = 960;
-const CLUSTER_H = 710;
+const CLUSTER_H = 620;
 
-const HUB: SystemNode = {
-  id: "sms",
-  label: "SMS",
-  icon: CreditCard, // unused for the hub — its front face is the logo itself
-  body: "The umbrella Smart Management System. Every module below plugs into it, sharing one login and one source of data across your whole institution.",
-  dx: 0,
-  dy: 0,
-};
+/*
+ * The hub is the bare logo — no outline, no fill, no flip. Only its id and
+ * footprint matter now, and the footprint is what the connectors anchor to.
+ * It keeps the old card's 280px width so the horizontal spacing is unchanged;
+ * it is much shorter, which is why the vertical offsets below tighten to keep
+ * the same visible gap.
+ */
+const HUB_ID = "sms";
 
 const NODES: SystemNode[] = [
   {
@@ -63,7 +63,7 @@ const NODES: SystemNode[] = [
     icon: CreditCard,
     body: "One card runs the whole campus — attendance, secure access and cashless payments in a single tap. Every tap writes straight back to the LMS.",
     dx: 0,
-    dy: -252,
+    dy: -200,
   },
   {
     id: "parent-sms",
@@ -91,7 +91,7 @@ const NODES: SystemNode[] = [
     href: "/services/lms",
     hrefLabel: "Visit LMS",
     dx: 0,
-    dy: 252,
+    dy: 200,
   },
   {
     id: "paper-class",
@@ -134,23 +134,15 @@ const useIsoLayoutEffect =
 
 function FlipCard({
   node,
-  isHub,
   flipped,
   onToggle,
   registerRef,
-  logoRef,
-  hubChromeRef,
   hidden,
 }: {
   node: SystemNode;
-  isHub?: boolean;
   flipped: boolean;
   onToggle: () => void;
   registerRef: (el: HTMLDivElement | null) => void;
-  /** Hub only — the travelling logo element. */
-  logoRef?: React.Ref<HTMLSpanElement>;
-  /** Hub only — border/fill/caption, faded in as the logo settles. */
-  hubChromeRef?: React.Ref<HTMLSpanElement>;
   /** Animated path: satellites start invisible and grow in on scroll. */
   hidden?: boolean;
 }) {
@@ -162,9 +154,7 @@ function FlipCard({
     <div
       ref={registerRef}
       style={style}
-      className={`sms-node flip-card relative z-10 h-[206px] w-full max-w-sm lg:max-w-none ${
-        isHub ? "lg:w-[280px]" : "lg:w-[250px]"
-      }`}
+      className="sms-node flip-card relative z-10 h-[206px] w-full max-w-sm lg:w-[250px] lg:max-w-none"
     >
       {/* One <button> per card, so Enter/Space, focus and the disclosure
           semantics come from the platform rather than hand-rolled key
@@ -178,43 +168,21 @@ function FlipCard({
           flipped ? "flipped" : ""
         }`}
       >
-        {/* Front — the logo for the hub, icon + label for everything else */}
-        {isHub ? (
-          <span
-            aria-hidden={flipped}
-            className="flip-card-front flex-col items-center justify-center gap-3 rounded-xl px-5 text-center"
-          >
-            {/* Chrome is its own layer so it can fade in independently of the
-                logo, which is mid-flight from the hero at that point. */}
-            <span
-              ref={hubChromeRef}
-              aria-hidden
-              className="absolute inset-0 rounded-xl border-2 border-foreground bg-surface"
-            />
-            <SmsLogoHub ref={logoRef} className="relative z-10" />
-            <span
-              data-hub-caption
-              className="relative z-10 text-[9.5px] font-bold tracking-[0.14em] text-muted uppercase"
-            >
-              Tap to learn more
-            </span>
+        {/* Front — icon and label */}
+        <span
+          aria-hidden={flipped}
+          className="flip-card-front flex-col items-center justify-center gap-3.5 rounded-xl border border-taupe bg-surface px-5 text-center transition-colors duration-300 group-hover:border-foreground"
+        >
+          <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-taupe bg-background text-foreground">
+            <Icon size={19} strokeWidth={1.6} />
           </span>
-        ) : (
-          <span
-            aria-hidden={flipped}
-            className="flip-card-front flex-col items-center justify-center gap-3.5 rounded-xl border border-taupe bg-surface px-5 text-center transition-colors duration-300 group-hover:border-foreground"
-          >
-            <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-taupe bg-background text-foreground">
-              <Icon size={19} strokeWidth={1.6} />
-            </span>
-            <span className="text-[12px] font-bold tracking-[0.16em] uppercase">
-              {node.label}
-            </span>
-            <span className="text-[9.5px] font-bold tracking-[0.14em] text-muted uppercase">
-              Tap to learn more
-            </span>
+          <span className="text-[12px] font-bold tracking-[0.16em] uppercase">
+            {node.label}
           </span>
-        )}
+          <span className="text-[9.5px] font-bold tracking-[0.14em] text-muted uppercase">
+            Tap to learn more
+          </span>
+        </span>
 
         {/* Back — description on the same footprint */}
         <span
@@ -278,7 +246,6 @@ export default function SmartSystemsDiagram() {
   const clusterRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const logoRef = useRef<HTMLSpanElement | null>(null);
-  const hubChromeRef = useRef<HTMLSpanElement | null>(null);
   const nodeEls = useRef<Map<string, HTMLDivElement>>(new Map());
 
   /** Cluster fit-scale, so the fixed-size cluster always fits the viewport. */
@@ -334,7 +301,7 @@ export default function SmartSystemsDiagram() {
    */
   const measure = useCallback(() => {
     const cluster = clusterRef.current;
-    const hubEl = nodeEls.current.get(HUB.id);
+    const hubEl = nodeEls.current.get(HUB_ID);
     if (!cluster || !hubEl) return;
 
     const desktop = window.matchMedia("(min-width: 64rem)").matches;
@@ -429,14 +396,6 @@ export default function SmartSystemsDiagram() {
       logo.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(${scale.toFixed(4)})`;
     }
 
-    // Hub card chrome and its caption arrive as the logo settles.
-    const chromeOpacity = String(clamp01((p - 0.7) / 0.28));
-    if (hubChromeRef.current) hubChromeRef.current.style.opacity = chromeOpacity;
-    const caption = clusterRef.current?.querySelector<HTMLElement>(
-      "[data-hub-caption]",
-    );
-    if (caption) caption.style.opacity = chromeOpacity;
-
     if (svgRef.current) {
       svgRef.current.style.opacity = String(clamp01((p - 0.6) / 0.3));
     }
@@ -522,7 +481,7 @@ export default function SmartSystemsDiagram() {
   const cluster = (
     <div
       ref={clusterRef}
-      className="relative mx-auto flex w-full max-w-sm flex-col items-center lg:block lg:h-[710px] lg:w-[960px] lg:max-w-none"
+      className="relative mx-auto flex w-full max-w-sm flex-col items-center lg:block lg:h-[620px] lg:w-[960px] lg:max-w-none"
     >
       {/* Connector layer — desktop radial only; the stacked layout uses the
           simple vertical rules between cards instead. Styling (colour, width,
@@ -563,15 +522,17 @@ export default function SmartSystemsDiagram() {
 
       {/* DOM order is the mobile reading order: hub first, then the five
           satellites. On desktop `.sms-node` lifts each card into position. */}
-      <FlipCard
-        isHub
-        node={HUB}
-        flipped={flipped.has(HUB.id)}
-        onToggle={() => toggle(HUB, flipped.has(HUB.id))}
-        registerRef={registerRef(HUB.id)}
-        logoRef={logoRef}
-        hubChromeRef={hubChromeRef}
-      />
+      {/* The hub: bare logo, no outline, no fill, not a flip card. Its 280px
+          box is the footprint the connectors anchor to (96px tall at the
+          logo's 2.911 aspect), which is what the offsets above are tuned
+          against. */}
+      <div
+        ref={registerRef(HUB_ID)}
+        style={{ "--dx": "0px", "--dy": "0px" } as CSSVars}
+        className="sms-node relative z-10 flex w-full max-w-[280px] items-center justify-center lg:w-[280px]"
+      >
+        <SmsLogoHub ref={logoRef} />
+      </div>
 
       {/* `display: contents` so each pair still participates directly in the
           mobile flex column and the desktop absolute layer. */}
