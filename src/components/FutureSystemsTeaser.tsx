@@ -16,18 +16,6 @@ export default function FutureSystemsTeaser() {
         >
           More Systems, Coming Soon
         </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 0.8, delay: 0.08, ease: EASE_PREMIUM }}
-          className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted md:text-base"
-        >
-          Parent SMS and Income Management are in active development, with more
-          modules joining the ecosystem as we build them with the institutions
-          already running on SMS.
-        </motion.p>
       </div>
     </section>
   );
