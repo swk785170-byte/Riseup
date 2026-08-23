@@ -21,7 +21,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import SectionHeading from "./SectionHeading";
-import SmsHero from "./SmsHero";
 import SmsLogoHub from "./SmsLogoHub";
 
 /** Inline styles that carry CSS custom properties, without reaching for `any`. */
@@ -572,12 +571,13 @@ export default function SmartSystemsDiagram() {
     );
   }
 
-  // Static path (below `lg`, or reduced motion): a logo-only hero, then the
-  // diagram already settled with its satellites present.
+  // Static path (below `lg`, or reduced motion): straight into the diagram,
+  // already settled with its satellites present — no logo-only hero screen
+  // first. `pt-36`/`md:pt-44` clears the fixed navbar, the job the hero used
+  // to do while it sat above this section.
   return (
     <>
-      <SmsHero />
-      <section className="w-full border-t border-border bg-surface/30 py-20 md:py-28">
+      <section className="w-full bg-surface/30 pt-36 pb-20 md:pt-44 md:pb-28">
         <div className="mx-auto mb-16 max-w-3xl px-5 md:mb-20 md:px-10">
           <SectionHeading
             center
