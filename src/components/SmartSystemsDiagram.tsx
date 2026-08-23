@@ -164,7 +164,7 @@ function FlipCard({
         type="button"
         onClick={onToggle}
         aria-expanded={flipped}
-        className={`flip-card-inner group block cursor-pointer rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${
+        className={`flip-card-inner group pointer-events-auto block cursor-pointer rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${
           flipped ? "flipped" : ""
         }`}
       >
@@ -409,10 +409,11 @@ export default function SmartSystemsDiagram() {
       el.style.transform = `translate(-50%, -50%) scale(${(0.86 + 0.14 * t).toFixed(3)})`;
     });
 
-    // Nothing is clickable until the diagram has actually arrived.
-    if (clusterRef.current) {
-      clusterRef.current.style.pointerEvents = p > 0.995 ? "auto" : "none";
-    }
+    /*
+     * Deliberately no pointer-events gating here. Interactivity must never
+     * depend on animation progress: the entrance touches `opacity` and
+     * `transform` only, so a card stays hit-testable at any scroll position.
+     */
   }, []);
 
   // Connector geometry — needed on both paths (a desktop visitor with reduced

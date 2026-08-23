@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { DoorOpen, ScanLine, Wallet } from "lucide-react";
+import { BellRing, DoorOpen, ScanLine } from "lucide-react";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 const CAPABILITIES = [
@@ -12,13 +12,15 @@ const CAPABILITIES = [
   },
   {
     icon: DoorOpen,
-    title: "Secure campus access",
+    title: "Secure class access",
     body: "Role-based entry to buildings, labs and exam halls, revocable in a click.",
   },
   {
-    icon: Wallet,
-    title: "Cashless payments",
-    body: "Canteen, library fines and fees, all settled from one topped-up card.",
+    // Ties the card into the Parent SMS module rather than introducing a
+    // standalone feature — the ecosystem diagram above makes the same link.
+    icon: BellRing,
+    title: "Instant Parent Alerts",
+    body: "Every tap sends a real-time notification straight to parents — no manual updates, no waiting for a call home.",
   },
 ];
 
@@ -60,7 +62,7 @@ function SmartCardMock() {
             riseup
           </span>
           <span className="text-[9px] font-bold tracking-[0.25em] text-background/50 uppercase">
-            Smart Campus
+            Smart Class
           </span>
         </div>
       </div>
@@ -80,19 +82,9 @@ export default function SmartCardFeature() {
             viewport={{ once: true, margin: "-12% 0px" }}
             transition={{ duration: 0.8, ease: EASE_PREMIUM }}
           >
-            <p className="mb-5 flex items-center gap-2.5 text-[11px] font-bold tracking-[0.3em] text-muted uppercase">
-              <span className="inline-block h-px w-8 bg-accent" />
-              Standout Feature
-            </p>
             <h2 className="text-[clamp(1.9rem,4vw,3rem)] leading-[1.05] font-medium tracking-[-0.02em]">
               Smart Card System
             </h2>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-muted">
-              One card runs the whole campus. Every student and staff member
-              carries a single smart card that tracks attendance, unlocks secure
-              spaces and handles cashless payments — and every tap writes
-              straight back to the LMS.
-            </p>
 
             <ul className="mt-8 flex flex-col gap-5">
               {CAPABILITIES.map((cap) => (
