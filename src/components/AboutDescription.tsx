@@ -43,11 +43,10 @@ export default function AboutDescription() {
           />
 
           <p className="text-[clamp(1.4rem,3vw,2.15rem)] leading-[1.35] font-medium tracking-[-0.01em] text-balance">
-            We started Riseup Solutions because most websites are built to look
-            busy, not to grow a business. So we work differently — strategy
-            first, obsessive craft second, and measurable results as the only
-            scoreboard. Small team, senior hands, no filler: just websites that
-            earn their keep.
+            We started Riseup Solutions to build websites that do more than
+            look good. We lead with strategy, focus on great design, and measure
+            success by real business results. Small team, senior talent and
+            websites that just work.
           </p>
         </motion.blockquote>
       </div>
