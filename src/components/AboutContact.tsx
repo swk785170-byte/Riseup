@@ -61,7 +61,9 @@ export default function AboutContact() {
             className="w-full rounded-full bg-foreground px-8 py-4 text-sm font-semibold tracking-tight text-background transition-colors duration-300 hover:bg-charcoal sm:w-auto"
           >
             <Mail size={17} strokeWidth={2} />
-            hello@riseupmedia.com
+            {/* Label, href and aria-label all read the same settings value, so
+                the address shown can never differ from the one mailed. */}
+            {email}
           </MagneticButton>
 
           {/* WhatsApp — secondary outline pill, opens in a new tab. Hidden
