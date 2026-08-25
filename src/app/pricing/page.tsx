@@ -6,6 +6,7 @@ import LMSPricing from "@/components/LMSPricing";
 import PricingComparison from "@/components/PricingComparison";
 import PricingFAQ from "@/components/PricingFAQ";
 import GetQuoteCTA from "@/components/GetQuoteCTA";
+import Contact from "@/components/Contact";
 
 export const metadata: Metadata = {
   title: "Pricing — RISEUP SOLUTIONS",
@@ -29,6 +30,7 @@ export default function PricingPage() {
         <PricingComparison />
         <PricingFAQ />
         <GetQuoteCTA />
+        <Contact />
       </main>
       <Footer />
     </>

@@ -37,7 +37,8 @@ export default function GetQuoteCTA() {
           className="mt-11 flex justify-center"
         >
           <MagneticButton
-            href="/#contact"
+            // The contact form now lives further down this same page.
+            href="#contact"
             strength={0.4}
             className="rounded-full bg-foreground px-10 py-4.5 text-[13px] font-bold tracking-[0.18em] text-background uppercase transition-colors duration-300 hover:bg-charcoal"
           >

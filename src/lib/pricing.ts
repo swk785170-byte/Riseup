@@ -38,7 +38,6 @@ export type PricingTier = {
   /** The package price — the only figure shown publicly. */
   price: string;
   tagline: string;
-  cta: string;
   popular?: boolean;
   /** Omitted features are treated as `none`. */
   features: Partial<Record<string, FeatureCell>>;
@@ -91,7 +90,6 @@ export const WEB_GROUP: PricingGroup = {
       name: "Starter",
       price: "15,000/=",
       tagline: "A single-page presence with the essentials done properly.",
-      cta: "Choose Starter",
       features: {
         pages: { kind: "value", value: "1", bullet: "1 page" },
         domain: INCLUDED,
@@ -110,7 +108,6 @@ export const WEB_GROUP: PricingGroup = {
       popular: true,
       tagline:
         "A multi-page site with the integrations and polish most businesses need.",
-      cta: "Choose Pro",
       features: {
         pages: { kind: "value", value: "3", bullet: "Up to 3 pages" },
         domain: INCLUDED,
@@ -140,7 +137,6 @@ export const WEB_GROUP: PricingGroup = {
       price: "50,000/=",
       tagline:
         "The full build — advanced motion, video and search performance.",
-      cta: "Choose Premium",
       features: {
         pages: { kind: "value", value: "10", bullet: "Up to 10 pages" },
         domain: INCLUDED,
@@ -210,7 +206,6 @@ export const LMS_GROUP: PricingGroup = {
       price: "90,000/=",
       tagline:
         "Everything to run classes online — scheduling, tutes and recordings.",
-      cta: "Choose Starter",
       features: {
         otp: INCLUDED,
         domain: INCLUDED,
@@ -238,7 +233,6 @@ export const LMS_GROUP: PricingGroup = {
       popular: true,
       tagline:
         "Adds student profiles, lesson packs and revenue tracking for growing classes.",
-      cta: "Choose Pro",
       features: {
         otp: INCLUDED,
         domain: INCLUDED,
@@ -270,7 +264,6 @@ export const LMS_GROUP: PricingGroup = {
       price: "150,000/=",
       tagline:
         "The complete platform — chat, bulk SMS, AI support and unlimited admins.",
-      cta: "Choose Premium",
       features: {
         otp: INCLUDED,
         domain: INCLUDED,

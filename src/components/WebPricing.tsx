@@ -43,7 +43,6 @@ export default function WebPricing() {
                   tier={tier}
                   inheritsFrom={inheritsFrom}
                   bullets={bullets}
-                  ctaHref="/#contact"
                 />
               </motion.div>
             );

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Check } from "lucide-react";
 import type { PricingTier } from "@/lib/pricing";
 
@@ -8,12 +7,10 @@ export default function PricingCard({
   tier,
   inheritsFrom,
   bullets,
-  ctaHref,
 }: {
   tier: PricingTier;
   inheritsFrom: string | null;
   bullets: string[];
-  ctaHref: string;
 }) {
   return (
     <article
@@ -57,17 +54,6 @@ export default function PricingCard({
           </li>
         ))}
       </ul>
-
-      <Link
-        href={ctaHref}
-        className={`mt-8 inline-flex items-center justify-center rounded-full px-6 py-3.5 text-[12px] font-bold tracking-[0.16em] uppercase transition-colors duration-300 ${
-          tier.popular
-            ? "bg-foreground text-background hover:bg-charcoal"
-            : "border border-foreground/20 text-foreground hover:border-foreground hover:bg-foreground hover:text-background"
-        }`}
-      >
-        {tier.cta}
-      </Link>
     </article>
   );
 }

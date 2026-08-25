@@ -42,7 +42,6 @@ export default function LMSPricing() {
                   tier={tier}
                   inheritsFrom={inheritsFrom}
                   bullets={bullets}
-                  ctaHref="/#contact"
                 />
               </motion.div>
             );

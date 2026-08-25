@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { useLenis, useScrollTo } from "./SmoothScroll";
@@ -230,18 +231,18 @@ export default function Footer() {
             © 2026 Riseup Solutions. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a
-              href="#"
+            <Link
+              href="/privacy"
               className="text-xs text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
             >
               Privacy Policy
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/terms"
               className="text-xs text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
             >
-              Terms of Service
-            </a>
+              Terms &amp; Conditions
+            </Link>
           </div>
         </div>
       </motion.div>
