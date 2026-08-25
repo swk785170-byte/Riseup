@@ -3,14 +3,16 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Mail, MessageCircle } from "lucide-react";
 import MagneticButton from "./MagneticButton";
+import { whatsappHref } from "@/lib/whatsapp";
 import { useSiteSettings } from "./SettingsProvider";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 export default function AboutContact() {
   const { email, whatsappNumber } = useSiteSettings();
-  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+  const whatsapp = whatsappHref(
+    whatsappNumber,
     "Hi Riseup Solutions, I'd like to talk about a project.",
-  )}`;
+  );
 
   return (
     <section
@@ -62,23 +64,27 @@ export default function AboutContact() {
             hello@riseupmedia.com
           </MagneticButton>
 
-          {/* WhatsApp — secondary outline pill, opens in a new tab */}
-          <MagneticButton
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            strength={0.2}
-            ariaLabel="Message Riseup Solutions on WhatsApp"
-            className="group w-full rounded-full border border-foreground/25 px-8 py-4 text-sm font-semibold tracking-tight text-foreground transition-colors duration-300 hover:border-foreground hover:bg-foreground hover:text-background sm:w-auto"
-          >
-            <MessageCircle size={17} strokeWidth={2} />
-            Chat on WhatsApp
-            <ArrowUpRight
-              size={14}
-              strokeWidth={2.5}
-              className="transition-transform duration-500 ease-premium group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            />
-          </MagneticButton>
+          {/* WhatsApp — secondary outline pill, opens in a new tab. Hidden
+              when no number is configured, rather than linking to wa.me with
+              no recipient. */}
+          {whatsapp && (
+            <MagneticButton
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              strength={0.2}
+              ariaLabel="Message Riseup Solutions on WhatsApp"
+              className="group w-full rounded-full border border-foreground/25 px-8 py-4 text-sm font-semibold tracking-tight text-foreground transition-colors duration-300 hover:border-foreground hover:bg-foreground hover:text-background sm:w-auto"
+            >
+              <MessageCircle size={17} strokeWidth={2} />
+              Chat on WhatsApp
+              <ArrowUpRight
+                size={14}
+                strokeWidth={2.5}
+                className="transition-transform duration-500 ease-premium group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </MagneticButton>
+          )}
         </motion.div>
 
         <motion.p

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { whatsappHref } from "@/lib/whatsapp";
 import { useSiteSettings } from "./SettingsProvider";
 import { EASE_PREMIUM } from "@/lib/motion";
 
@@ -14,12 +15,13 @@ export default function WhatsAppButton() {
   const { whatsappNumber } = useSiteSettings();
   const pathname = usePathname();
 
-  if (!whatsappNumber) return null;
   if (pathname?.startsWith("/admin")) return null;
 
-  const href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+  const href = whatsappHref(
+    whatsappNumber,
     "Hi Riseup Solutions, I'd like to talk about a project.",
-  )}`;
+  );
+  if (!href) return null;
 
   return (
     <motion.a

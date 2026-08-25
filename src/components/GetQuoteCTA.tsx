@@ -3,9 +3,20 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import MagneticButton from "./MagneticButton";
+import { useSiteSettings } from "./SettingsProvider";
+import { whatsappHref } from "@/lib/whatsapp";
 import { EASE_PREMIUM } from "@/lib/motion";
 
 export default function GetQuoteCTA() {
+  const { whatsappNumber } = useSiteSettings();
+  const whatsapp = whatsappHref(
+    whatsappNumber,
+    "Hi Riseup Solutions, I'd like a quote for a project.",
+  );
+  // Falls back to the contact form further down this page if no WhatsApp
+  // number is configured in the admin panel, so the button is never dead.
+  const href = whatsapp ?? "#contact";
+
   return (
     <section id="get-quote" className="border-t border-border bg-surface/50">
       <div className="mx-auto max-w-3xl px-5 py-24 text-center md:px-10 md:py-32">
@@ -37,8 +48,12 @@ export default function GetQuoteCTA() {
           className="mt-11 flex justify-center"
         >
           <MagneticButton
-            // The contact form now lives further down this same page.
-            href="#contact"
+            href={href}
+            target={whatsapp ? "_blank" : undefined}
+            rel={whatsapp ? "noopener noreferrer" : undefined}
+            ariaLabel={
+              whatsapp ? "Get a quote on WhatsApp" : "Get a quote"
+            }
             strength={0.4}
             className="rounded-full bg-foreground px-10 py-4.5 text-[13px] font-bold tracking-[0.18em] text-background uppercase transition-colors duration-300 hover:bg-charcoal"
           >
