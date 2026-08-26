@@ -5,6 +5,11 @@ import LogoutButton from "@/components/admin/LogoutButton";
 import NotificationBell from "@/components/admin/NotificationBell";
 import { getUnhandledInquiries } from "@/lib/data/inquiries";
 
+/* The whole admin tree is per-user and reads the session cookie, so it must
+   never be statically prerendered. Declared once here rather than repeated on
+   every page — the public site stays static. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Admin — Riseup Solutions",
   robots: { index: false, follow: false },

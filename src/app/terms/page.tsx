@@ -10,6 +10,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Terms & Conditions — RISEUP SOLUTIONS",
+  alternates: { canonical: "/terms" },
   description:
     "The terms that apply to your use of the Riseup Solutions website, including enquiries, published pricing and intellectual property.",
 };

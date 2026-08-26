@@ -10,6 +10,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Privacy Policy — RISEUP SOLUTIONS",
+  alternates: { canonical: "/privacy" },
   description:
     "How Riseup Solutions collects, uses and protects personal information submitted through this website.",
 };

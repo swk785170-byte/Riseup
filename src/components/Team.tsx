@@ -164,6 +164,7 @@ export default function Team({
       <div className="mx-auto max-w-7xl px-5 pt-36 pb-24 md:px-10 md:pt-52 md:pb-28">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading
+            as="h1"
             eyebrow="Meet Our Team"
             title={
               <>

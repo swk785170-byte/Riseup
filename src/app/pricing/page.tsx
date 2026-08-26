@@ -7,9 +7,13 @@ import PricingComparison from "@/components/PricingComparison";
 import PricingFAQ from "@/components/PricingFAQ";
 import GetQuoteCTA from "@/components/GetQuoteCTA";
 import Contact from "@/components/Contact";
+import { FAQS } from "@/lib/faqs";
+import JsonLd, { breadcrumbSchema, faqSchema } from "@/components/seo/JsonLd";
+import { siteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Pricing — RISEUP SOLUTIONS",
+  alternates: { canonical: "/pricing" },
   description:
     "Transparent pricing for Riseup Solutions web packages and LMS / student management systems — or a custom quote for something bespoke.",
   openGraph: {
@@ -28,6 +32,16 @@ export const revalidate = 300;
 export default function PricingPage() {
   return (
     <>
+      {/* FAQPage markup makes these six answers eligible for featured
+          snippets and People-Also-Ask, and gives AI engines a clean Q&A pair
+          to quote. */}
+      <JsonLd data={faqSchema(FAQS)} />
+      <JsonLd
+        data={breadcrumbSchema(siteUrl(), [
+          { name: "Home", path: "/" },
+          { name: "Pricing", path: "/pricing" },
+        ])}
+      />
       <Navbar />
       <main>
         <WebPricing />

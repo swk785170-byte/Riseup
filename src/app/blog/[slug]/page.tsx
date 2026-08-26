@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SafeImage from "@/components/SafeImage";
 import { getPostBySlug } from "@/lib/data/posts";
+import JsonLd, { articleSchema, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { siteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +58,26 @@ export default async function BlogPostPage({
 
   return (
     <>
+      {/* BlogPosting markup: gives the post an author, publisher and date that
+          search and AI engines can attribute, rather than treating it as
+          anonymous page copy. */}
+      <JsonLd
+        data={articleSchema({
+          siteUrl: siteUrl(),
+          title: post.title,
+          description: post.excerpt,
+          slug: post.slug,
+          publishedAt: post.publishedAt,
+          image: post.coverUrl ?? null,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema(siteUrl(), [
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ])}
+      />
       <Navbar />
       <main>
         <article className="mx-auto max-w-3xl px-5 pt-36 pb-20 md:px-10 md:pt-44">

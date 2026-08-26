@@ -8,6 +8,13 @@ type SectionHeadingProps = {
   title: React.ReactNode;
   sub?: string;
   center?: boolean;
+  /**
+   * Heading level. Defaults to h2, but a page whose first real heading is a
+   * section heading must render it as the page's single h1 — otherwise the
+   * page ships with no h1 at all, which costs it the strongest on-page signal
+   * and leaves screen-reader users without a page title.
+   */
+  as?: "h1" | "h2";
 };
 
 export default function SectionHeading({
@@ -15,7 +22,9 @@ export default function SectionHeading({
   title,
   sub,
   center = false,
+  as = "h2",
 }: SectionHeadingProps) {
+  const Heading = as === "h1" ? motion.h1 : motion.h2;
   return (
     <div
       className={`flex flex-col ${center ? "items-center text-center" : "items-start"}`}
@@ -32,7 +41,7 @@ export default function SectionHeading({
         {center && <span className="inline-block h-px w-8 bg-accent" />}
       </motion.p>
 
-      <motion.h2
+      <Heading
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-12% 0px" }}
@@ -40,7 +49,7 @@ export default function SectionHeading({
         className="text-[clamp(2.2rem,5vw,3.9rem)] leading-[1.02] font-medium tracking-[-0.02em] text-balance"
       >
         {title}
-      </motion.h2>
+      </Heading>
 
       {sub && (
         <motion.p

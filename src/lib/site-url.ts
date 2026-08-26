@@ -1,24 +1,28 @@
 import "server-only";
 
 /**
- * Absolute URL for the magic-link callback.
+ * Canonical origin for this deployment.
  *
- * Built from a server-side env var, NEVER from a request header or a user
- * supplied value. A redirect target taken from input is the classic open
- * redirect, and here it would also be an account-takeover vector: the sign-in
- * code would be delivered to whatever host the attacker named.
+ * Built from an env var, NEVER from a request header — a Host header is
+ * attacker-controllable, and using it here would poison canonical tags, the
+ * sitemap and the registration links we email to clients.
  */
-export function siteUrl(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.NODE_ENV === "production" ? "" : "http://localhost:3000");
+const FALLBACK_ORIGIN = "http://localhost:3000";
 
-  if (!raw) {
-    throw new Error(
-      "NEXT_PUBLIC_SITE_URL must be set in production so magic links point at the real site.",
+export function siteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (raw) return raw.replace(/\/+$/, "");
+
+  if (process.env.NODE_ENV === "production") {
+    // Read at build time for metadataBase, canonicals, robots.txt and the
+    // sitemap, so throwing here would break the build outright. Warn loudly
+    // instead — a wrong canonical domain is bad, but a site that will not
+    // build is worse.
+    console.error(
+      "[site-url] NEXT_PUBLIC_SITE_URL is not set — canonical URLs, the sitemap and registration links will point at localhost. Set it before deploying.",
     );
   }
-  return raw.replace(/\/+$/, "");
+  return FALLBACK_ORIGIN;
 }
 
 export function portalCallbackUrl(): string {

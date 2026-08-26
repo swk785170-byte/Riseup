@@ -14,6 +14,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "About — RISEUP SOLUTIONS",
+  alternates: { canonical: "/about" },
   description:
     "Meet the small, senior team behind Riseup Solutions — designers and engineers building websites and systems that grow businesses. Reach us by email or WhatsApp.",
   openGraph: {

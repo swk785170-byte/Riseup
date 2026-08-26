@@ -8,6 +8,7 @@ import { getAllProjects } from "@/lib/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects — RISEUP SOLUTIONS",
+  alternates: { canonical: "/projects" },
   description:
     "The full Riseup Solutions portfolio — storefronts, web apps, brand sites and SEO rebuilds, each shipped with measurable results. Filter by discipline and explore the case studies.",
   openGraph: {

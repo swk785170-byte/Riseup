@@ -22,6 +22,7 @@ export default function WebPricing() {
     <section id="web-packages" className="scroll-mt-24">
       <div className="mx-auto max-w-7xl px-5 pt-36 pb-20 md:px-10 md:pt-52 md:pb-24">
         <SectionHeading
+          as="h1"
           center
           eyebrow="Web Packages"
           title={WEB_GROUP.heading}
