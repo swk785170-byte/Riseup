@@ -70,7 +70,7 @@ export default function DomainRegistrationForm({
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="flex flex-col gap-6"
+      className="register-form flex flex-col gap-6"
     >
       <div>
         <label htmlFor="domain_name" className="admin-label">
@@ -116,77 +116,77 @@ export default function DomainRegistrationForm({
         </div>
       </fieldset>
 
-      {/* Owner details — required only when the client is not the owner. */}
-      {!isOwner && (
-        <div className="flex flex-col gap-5 rounded-xl border border-border bg-surface/40 p-5">
-          <p className="text-xs leading-relaxed text-muted">
-            Because you&rsquo;re not the owner, we need the owner&rsquo;s
-            details to complete the registration.
-          </p>
+      {/* Always on screen, per the client's reference form. They are only
+          *required* when the answer above is "No" — validated in zod and by a
+          CHECK constraint, so the rule holds even if the form is bypassed. */}
+      <div className="flex flex-col gap-5 border border-border bg-surface/40 p-5">
+        <p className="text-sm leading-relaxed font-medium">
+          If you are not the owner of the domain/above business, please provide
+          domain owner details below.
+        </p>
 
-          <div>
-            <label htmlFor="owner_name" className="admin-label">
-              Owner name
-            </label>
-            <input
-              id="owner_name"
-              autoComplete="off"
-              className="admin-input"
-              aria-invalid={Boolean(errors.owner_name)}
-              {...register("owner_name")}
-            />
-            <FieldError message={errors.owner_name?.message} />
-          </div>
-
-          <div>
-            <label htmlFor="owner_nic_or_passport" className="admin-label">
-              Owner NIC/PP number
-            </label>
-            <input
-              id="owner_nic_or_passport"
-              autoComplete="off"
-              className="admin-input"
-              aria-describedby="nic-help"
-              aria-invalid={Boolean(errors.owner_nic_or_passport)}
-              {...register("owner_nic_or_passport")}
-            />
-            <p id="nic-help" className="mt-1.5 text-xs text-muted">
-              NIC number or Passport Number of domain owner
-            </p>
-            <FieldError message={errors.owner_nic_or_passport?.message} />
-          </div>
-
-          <div>
-            <label htmlFor="owner_email" className="admin-label">
-              Owner email
-            </label>
-            <input
-              id="owner_email"
-              type="email"
-              autoComplete="off"
-              className="admin-input"
-              aria-invalid={Boolean(errors.owner_email)}
-              {...register("owner_email")}
-            />
-            <FieldError message={errors.owner_email?.message} />
-          </div>
-
-          <div>
-            <label htmlFor="owner_contact_number" className="admin-label">
-              Contact number
-            </label>
-            <input
-              id="owner_contact_number"
-              inputMode="tel"
-              autoComplete="off"
-              className="admin-input"
-              aria-invalid={Boolean(errors.owner_contact_number)}
-              {...register("owner_contact_number")}
-            />
-            <FieldError message={errors.owner_contact_number?.message} />
-          </div>
+        <div>
+          <label htmlFor="owner_name" className="admin-label">
+            Owner name
+          </label>
+          <input
+            id="owner_name"
+            autoComplete="off"
+            className="admin-input"
+            aria-invalid={Boolean(errors.owner_name)}
+            {...register("owner_name")}
+          />
+          <FieldError message={errors.owner_name?.message} />
         </div>
-      )}
+
+        <div>
+          <label htmlFor="owner_nic_or_passport" className="admin-label">
+            Owner NIC/PP number
+          </label>
+          <input
+            id="owner_nic_or_passport"
+            autoComplete="off"
+            className="admin-input"
+            aria-describedby="nic-help"
+            aria-invalid={Boolean(errors.owner_nic_or_passport)}
+            {...register("owner_nic_or_passport")}
+          />
+          <p id="nic-help" className="mt-1.5 text-xs text-muted">
+            NIC number or Passport Number of domain owner
+          </p>
+          <FieldError message={errors.owner_nic_or_passport?.message} />
+        </div>
+
+        <div>
+          <label htmlFor="owner_email" className="admin-label">
+            Owner email
+          </label>
+          <input
+            id="owner_email"
+            type="email"
+            autoComplete="off"
+            className="admin-input"
+            aria-invalid={Boolean(errors.owner_email)}
+            {...register("owner_email")}
+          />
+          <FieldError message={errors.owner_email?.message} />
+        </div>
+
+        <div>
+          <label htmlFor="owner_contact_number" className="admin-label">
+            Contact number
+          </label>
+          <input
+            id="owner_contact_number"
+            inputMode="tel"
+            autoComplete="off"
+            className="admin-input"
+            aria-invalid={Boolean(errors.owner_contact_number)}
+            {...register("owner_contact_number")}
+          />
+          <FieldError message={errors.owner_contact_number?.message} />
+        </div>
+      </div>
 
       {error && (
         <p

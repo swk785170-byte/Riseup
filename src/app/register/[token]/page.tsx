@@ -62,7 +62,10 @@ export default async function RegisterPage({
   return (
     <div className="mx-auto max-w-2xl px-5 py-14 md:py-20">
       <header className="flex flex-col gap-8">
-        <Logo className="h-7 w-auto" />
+        {/* `self-start`: a flex column stretches its children across the cross
+            axis by default, which overrides `w-auto` and smears the wordmark
+            to the full container width. */}
+        <Logo className="h-7 w-auto self-start" />
 
         <div>
           <p className="text-[11px] font-bold tracking-[0.3em] text-muted uppercase">

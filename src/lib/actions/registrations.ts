@@ -171,17 +171,18 @@ export async function submitDomainRegistration(
     }
     const v = parsed.data;
 
-    // When the client IS the owner, third-party fields are cleared rather than
-    // left behind from a previous answer — stale personal data should not sit
-    // in the record after it stops being relevant.
+    // The owner fields are always on screen now, so whatever the client typed
+    // is kept regardless of the Yes/No answer — silently discarding it because
+    // they ticked "Yes" would lose data they deliberately entered. They stay
+    // *required* only when the client is not the owner (zod + CHECK constraint).
     const row = {
       link_id: link.id,
       domain_name: v.domain_name.toLowerCase(),
       is_owner: v.is_owner,
-      owner_name: v.is_owner ? null : (v.owner_name || null),
-      owner_nic_or_passport: v.is_owner ? null : (v.owner_nic_or_passport || null),
-      owner_email: v.is_owner ? null : (v.owner_email || null),
-      owner_contact_number: v.is_owner ? null : (v.owner_contact_number || null),
+      owner_name: v.owner_name || null,
+      owner_nic_or_passport: v.owner_nic_or_passport || null,
+      owner_email: v.owner_email || null,
+      owner_contact_number: v.owner_contact_number || null,
       status: "submitted" as const,
     };
 

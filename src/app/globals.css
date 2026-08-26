@@ -376,3 +376,13 @@ html.lenis body {
     opacity: 1;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Registration form — square fields, matching the client's reference */
+/*  form. Scoped so the admin panel keeps its rounded inputs.          */
+/* ------------------------------------------------------------------ */
+.register-form .admin-input,
+.register-form .admin-textarea,
+.register-form .admin-select {
+  border-radius: 0;
+}
