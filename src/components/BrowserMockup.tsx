@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 /** Palette default when a project has no `accent_bg` set. */
 export const DEFAULT_ACCENT_BG = "#F1EEE6";
@@ -145,16 +146,23 @@ export default function BrowserMockup({
         </div>
 
         {/* Preview — object-top keeps the hero in frame when the source is a
-            full-page screenshot rather than a curated crop. */}
-        <div className="aspect-[16/10] w-full overflow-hidden bg-white">
+            full-page screenshot rather than a curated crop.
+
+            next/image rather than a raw <img>: these are admin-uploaded
+            screenshots straight from Storage (one is 735KB of PNG), and this
+            re-encodes them to AVIF/WebP at the size the card actually renders
+            instead of shipping the full-resolution original. */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-white">
           {src ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={src}
               alt={alt}
-              loading="lazy"
+              fill
+              // Cards sit one-up on phones, two-up on tablets, three-up on
+              // desktop — so the browser never fetches more pixels than it paints.
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               onError={onImageError}
-              className="h-full w-full object-cover object-top"
+              className="object-cover object-top"
             />
           ) : (
             children

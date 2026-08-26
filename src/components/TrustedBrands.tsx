@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 import { animate, motion, useInView } from "framer-motion";
 import { EASE_PREMIUM } from "@/lib/motion";
@@ -28,15 +29,25 @@ function LogoSlot({ logo }: { logo: ClientLogo }) {
     );
   }
 
+  /*
+   * next/image inside a fixed slot rather than a raw <img> with `w-auto`.
+   *
+   * These are admin-uploaded logos — the set currently totals ~1.2MB, one of
+   * them 738KB — all painted at 48-56px tall. `fill` + `object-contain` lets
+   * the optimiser re-encode each to the size actually shown without ever
+   * distorting a logo, whatever its aspect ratio.
+   */
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={logo.logoUrl}
-      alt={logo.name}
-      loading="lazy"
-      onError={() => setFailed(true)}
-      className={`${shared} h-12 w-auto object-contain md:h-14`}
-    />
+    <div className={`${shared} relative h-12 w-36 md:h-14 md:w-44`}>
+      <Image
+        src={logo.logoUrl}
+        alt={logo.name}
+        fill
+        sizes="(max-width: 768px) 144px, 176px"
+        onError={() => setFailed(true)}
+        className="object-contain"
+      />
+    </div>
   );
 }
 

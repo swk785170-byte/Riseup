@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import {
   SEED_CLIENT_LOGOS,
@@ -11,7 +11,7 @@ import {
 async function fetchRows(): Promise<DbClientLogo[] | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("client_logos")
       .select("*")
@@ -45,7 +45,7 @@ export async function getClientLogos(): Promise<ClientLogo[]> {
 export async function getAdminClientLogos(): Promise<DbClientLogo[]> {
   if (!isSupabaseConfigured()) return [];
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("client_logos")
       .select("*")
@@ -64,7 +64,7 @@ export async function getAdminClientLogoById(
 ): Promise<DbClientLogo | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("client_logos")
       .select("*")

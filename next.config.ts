@@ -71,6 +71,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Rewrites barrel imports to deep paths so only the icons/helpers actually
+    // used are bundled — lucide-react alone is ~38MB unpacked.
+    optimizePackageImports: ["lucide-react", "framer-motion", "gsap"],
+  },
   // A stray lockfile exists in the user directory above this project;
   // pin the workspace root so Turbopack doesn't infer the wrong one.
   turbopack: {

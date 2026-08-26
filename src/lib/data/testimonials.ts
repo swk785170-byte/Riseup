@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import {
   SEED_TESTIMONIALS,
@@ -11,7 +11,7 @@ import {
 async function fetchRows(): Promise<DbTestimonial[] | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("testimonials")
       .select("*")
@@ -45,7 +45,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 export async function getAdminTestimonials(): Promise<DbTestimonial[]> {
   if (!isSupabaseConfigured()) return [];
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("testimonials")
       .select("*")
@@ -64,7 +64,7 @@ export async function getAdminTestimonialById(
 ): Promise<DbTestimonial | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("testimonials")
       .select("*")

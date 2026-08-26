@@ -1,12 +1,12 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { SEED_POSTS, mapRowToPost, type DbPost, type Post } from "@/lib/posts";
 
 async function fetchRows(): Promise<DbPost[] | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("posts")
       .select("*")
@@ -46,7 +46,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export async function getAdminPosts(): Promise<DbPost[]> {
   if (!isSupabaseConfigured()) return [];
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("posts")
       .select("*")
@@ -64,7 +64,7 @@ export async function getAdminPosts(): Promise<DbPost[]> {
 export async function getAdminPostById(id: string): Promise<DbPost | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("posts")
       .select("*")

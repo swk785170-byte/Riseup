@@ -7,6 +7,11 @@ import SafeImage from "@/components/SafeImage";
 import { getPublishedPosts } from "@/lib/data/posts";
 import type { Post } from "@/lib/posts";
 
+
+/* Prerendered and refreshed every 5 minutes. Admin edits call
+   revalidatePath(), so changes still appear immediately. */
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: "Blog — RISEUP SOLUTIONS",
   description:

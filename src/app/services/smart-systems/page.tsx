@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   },
 };
 
+
+/* Prerendered and refreshed every 5 minutes. Admin edits call
+   revalidatePath(), so changes still appear immediately. */
+export const revalidate = 300;
+
 export default function SmartSystemsPage() {
   return (
     <>

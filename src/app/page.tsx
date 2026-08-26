@@ -10,6 +10,10 @@ import { getFeaturedProjects } from "@/lib/data/projects";
 import { getTestimonials } from "@/lib/data/testimonials";
 import { getClientLogos } from "@/lib/data/client-logos";
 
+/* Prerendered and refreshed every 5 minutes. Admin edits call
+   revalidatePath(), so changes still appear immediately. */
+export const revalidate = 300;
+
 export default async function Home() {
   const [featured, clientLogos, testimonials] = await Promise.all([
     getFeaturedProjects(3),

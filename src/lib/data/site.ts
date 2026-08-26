@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import {
   SEED_TEAM,
@@ -27,7 +27,7 @@ import {
 export async function getTeamMembers(): Promise<TeamMember[]> {
   if (!isSupabaseConfigured()) return SEED_TEAM;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("team_members")
       .select("*")
@@ -45,7 +45,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
 export async function getAdminTeamMembers(): Promise<DbTeamMember[]> {
   if (!isSupabaseConfigured()) return [];
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("team_members")
       .select("*")
@@ -64,7 +64,7 @@ export async function getAdminTeamMemberById(
 ): Promise<DbTeamMember | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("team_members")
       .select("*")
@@ -85,7 +85,7 @@ export async function getAdminTeamMemberById(
 export async function getGalleryImages(): Promise<GalleryImage[]> {
   if (!isSupabaseConfigured()) return SEED_GALLERY;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("gallery_images")
       .select("*")
@@ -102,7 +102,7 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
 export async function getAdminGalleryImages(): Promise<DbGalleryImage[]> {
   if (!isSupabaseConfigured()) return [];
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("gallery_images")
       .select("*")
@@ -121,7 +121,7 @@ export async function getAdminGalleryImageById(
 ): Promise<DbGalleryImage | null> {
   if (!isSupabaseConfigured()) return null;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("gallery_images")
       .select("*")
@@ -142,7 +142,7 @@ export async function getAdminGalleryImageById(
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!isSupabaseConfigured()) return DEFAULT_SETTINGS;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("site_settings")
       .select("*")

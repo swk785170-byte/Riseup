@@ -8,9 +8,7 @@ import {
   useState,
 } from "react";
 import { usePathname } from "next/navigation";
-import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type Lenis from "lenis";
 
 const LenisContext = createContext<Lenis | null>(null);
 
@@ -52,23 +50,52 @@ export default function SmoothScroll({
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin") ?? false;
 
+  /*
+   * Loaded on demand rather than imported at the top of the file.
+   *
+   * This component lives in the root layout, so a static import would put
+   * gsap + ScrollTrigger + lenis into the shared bundle that EVERY page
+   * downloads before it can render — including pages with no animation at
+   * all. Importing inside the effect keeps them off the critical path and
+   * out of the first load entirely.
+   */
   useEffect(() => {
     if (isAdmin) return; // the admin tool uses native scrolling
-    gsap.registerPlugin(ScrollTrigger);
 
-    const instance = new Lenis({ lerp: 0.05 });
-    instance.on("scroll", ScrollTrigger.update);
+    let cleanup: (() => void) | null = null;
+    let cancelled = false;
 
-    const tick = (time: number) => instance.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    void (async () => {
+      const [{ default: LenisCtor }, { default: gsap }, { ScrollTrigger }] =
+        await Promise.all([
+          import("lenis"),
+          import("gsap"),
+          import("gsap/ScrollTrigger"),
+        ]);
+      // Unmounted (or navigated to /admin) while the chunk was in flight.
+      if (cancelled) return;
 
-    setLenis(instance);
+      gsap.registerPlugin(ScrollTrigger);
+
+      const instance = new LenisCtor({ lerp: 0.05 });
+      instance.on("scroll", ScrollTrigger.update);
+
+      const tick = (time: number) => instance.raf(time * 1000);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+
+      setLenis(instance);
+
+      cleanup = () => {
+        gsap.ticker.remove(tick);
+        instance.destroy();
+        setLenis(null);
+      };
+    })();
 
     return () => {
-      gsap.ticker.remove(tick);
-      instance.destroy();
-      setLenis(null);
+      cancelled = true;
+      cleanup?.();
     };
   }, [isAdmin]);
 

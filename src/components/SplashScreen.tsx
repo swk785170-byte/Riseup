@@ -15,24 +15,26 @@ export default function SplashScreen() {
   const [hidden, setHidden] = useState(false);
   const [gone, setGone] = useState(false);
 
+  /*
+   * Previously this waited for `window.load`, which fires only after EVERY
+   * subresource — images, fonts, the lot — has finished. On a media-heavy page
+   * that held the splash over an already-interactive site for seconds.
+   *
+   * This effect runs once React has hydrated, i.e. the page is interactive, so
+   * the brand moment now lasts a predictable ~550ms instead of however long
+   * the slowest image takes.
+   */
   useEffect(() => {
     const MIN_MS = 550;
-    const start = performance.now();
-    let fadeTimer = 0;
     let goneTimer = 0;
-    const finish = () => {
-      const wait = Math.max(0, MIN_MS - (performance.now() - start));
-      fadeTimer = window.setTimeout(() => {
-        setHidden(true);
-        goneTimer = window.setTimeout(() => setGone(true), 500);
-      }, wait);
-    };
-    if (document.readyState === "complete") finish();
-    else window.addEventListener("load", finish, { once: true });
+    const fadeTimer = window.setTimeout(() => {
+      setHidden(true);
+      goneTimer = window.setTimeout(() => setGone(true), 500);
+    }, MIN_MS);
+
     return () => {
       window.clearTimeout(fadeTimer);
       window.clearTimeout(goneTimer);
-      window.removeEventListener("load", finish);
     };
   }, []);
 

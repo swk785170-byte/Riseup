@@ -7,6 +7,11 @@ import AboutGallery from "@/components/AboutGallery";
 import AboutContact from "@/components/AboutContact";
 import { getGalleryImages, getTeamMembers } from "@/lib/data/site";
 
+
+/* Prerendered and refreshed every 5 minutes. Admin edits call
+   revalidatePath(), so changes still appear immediately. */
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: "About — RISEUP SOLUTIONS",
   description:

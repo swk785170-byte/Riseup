@@ -386,3 +386,24 @@ html.lenis body {
 .register-form .admin-select {
   border-radius: 0;
 }
+
+/* WhatsApp button entrance — replaces a framer-motion mount animation that
+   would otherwise pull the whole runtime into the shared bundle. */
+@keyframes wa-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.wa-pop {
+  animation: wa-pop 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.8s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-pop {
+    animation: none;
+  }
+}
