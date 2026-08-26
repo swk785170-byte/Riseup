@@ -11,6 +11,7 @@ import {
   type DomainRegistrationValues,
 } from "@/lib/schemas/portal";
 import type { DbDomainRegistration } from "@/lib/registrations";
+import { normaliseDomain } from "@/lib/domain";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -56,6 +57,10 @@ export default function DomainRegistrationForm({
 
   const isOwner = watch("is_owner");
 
+  // The schema normalises on submit; doing it on blur too means the client can
+  // see what will actually be saved instead of it changing silently behind them.
+  const domainField = register("domain_name");
+
   function onSubmit(values: DomainRegistrationValues) {
     setError(null);
     setSaved(false);
@@ -83,7 +88,14 @@ export default function DomainRegistrationForm({
           placeholder="example.com"
           className="admin-input"
           aria-invalid={Boolean(errors.domain_name)}
-          {...register("domain_name")}
+          {...domainField}
+          onBlur={(event) => {
+            const cleaned = normaliseDomain(event.target.value);
+            if (cleaned && cleaned !== event.target.value) {
+              setValue("domain_name", cleaned, { shouldValidate: true });
+            }
+            void domainField.onBlur(event);
+          }}
         />
         <FieldError message={errors.domain_name?.message} />
       </div>

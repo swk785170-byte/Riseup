@@ -177,7 +177,8 @@ export async function submitDomainRegistration(
     // *required* only when the client is not the owner (zod + CHECK constraint).
     const row = {
       link_id: link.id,
-      domain_name: v.domain_name.toLowerCase(),
+      // Already normalised (scheme/path/www stripped, lower-cased) by the schema.
+      domain_name: v.domain_name,
       is_owner: v.is_owner,
       owner_name: v.owner_name || null,
       owner_nic_or_passport: v.owner_nic_or_passport || null,

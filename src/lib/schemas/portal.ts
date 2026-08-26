@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normaliseDomain } from "@/lib/domain";
 
 /**
  * Server-side validation for link-based domain registration.
@@ -11,15 +12,25 @@ import { z } from "zod";
 
 const trimmed = (max: number) => z.string().trim().max(max);
 
-/** Conservative hostname shape — also rejects a pasted URL or path. */
-const DOMAIN_RE =
-  /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.(?!-)[a-z0-9-]{1,63}(?<!-))+$/i;
-
 export const domainRegistrationSchema = z
   .object({
-    domain_name: trimmed(253)
-      .min(3, "Enter the domain name")
-      .regex(DOMAIN_RE, "Enter a domain like example.com"),
+    /*
+     * Accepts whatever the client pastes — a full URL, a www host, a trailing
+     * slash — and normalises it rather than refusing. The only remaining rule
+     * is the 3-253 character bound the database column enforces, so the two
+     * can never disagree and produce an opaque constraint error.
+     */
+    domain_name: z
+      .string()
+      .trim()
+      .max(400, "That is too long to be a domain name")
+      .transform(normaliseDomain)
+      .pipe(
+        z
+          .string()
+          .min(3, "Enter the domain name")
+          .max(253, "That is too long to be a domain name"),
+      ),
     is_owner: z.boolean(),
     owner_name: trimmed(120).optional().or(z.literal("")),
     owner_nic_or_passport: trimmed(40).optional().or(z.literal("")),
