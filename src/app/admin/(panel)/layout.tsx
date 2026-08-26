@@ -4,6 +4,7 @@ import Logo from "@/components/Logo";
 import LogoutButton from "@/components/admin/LogoutButton";
 import NotificationBell from "@/components/admin/NotificationBell";
 import { getUnhandledInquiries } from "@/lib/data/inquiries";
+import { ensureStaffRecord } from "@/lib/auth/staff";
 
 export const metadata: Metadata = {
   title: "Admin — Riseup Solutions",
@@ -17,6 +18,9 @@ export default async function AdminPanelLayout({
 }) {
   // Initial state for the bell; Realtime keeps it current from here.
   const outstanding = await getUnhandledInquiries();
+  // Keep the DB-side staff list in step with ADMIN_EMAILS, so RLS (and the
+  // admin's own Realtime socket) recognises this account.
+  await ensureStaffRecord();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -66,6 +70,18 @@ export default async function AdminPanelLayout({
                 className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
               >
                 Gallery
+              </Link>
+              <Link
+                href="/admin/clients"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Clients
+              </Link>
+              <Link
+                href="/admin/messages"
+                className="text-[12px] font-bold tracking-[0.14em] text-foreground/70 uppercase transition-colors hover:text-foreground"
+              >
+                Inbox
               </Link>
               <Link
                 href="/admin/inquiries"
