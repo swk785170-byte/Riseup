@@ -300,23 +300,6 @@ export const SEED_PROJECTS: Project[] = [
   },
 ];
 
-export type FilterKey = ProjectFilter | "all";
-
-export const PROJECT_FILTERS: { key: FilterKey; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "web-design", label: "Web Design" },
-  { key: "web-development", label: "Web Development" },
-  { key: "e-commerce", label: "E-Commerce" },
-  { key: "seo", label: "SEO & Growth" },
-];
-
-/** Pure client-side filter over an already-fetched list (used by the archive). */
-export const filterProjects = (
-  projects: Project[],
-  key: FilterKey,
-): Project[] =>
-  key === "all" ? projects : projects.filter((p) => p.filters.includes(key));
-
 /* ------------------------------------------------------------------ */
 /*  Supabase row shape + mapping into the rich `Project` used by the UI */
 /* ------------------------------------------------------------------ */
