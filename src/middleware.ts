@@ -2,41 +2,29 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { isAdminEmail } from "@/lib/auth/allowlist";
 
-/** Routes that must stay reachable without a session. */
-const PUBLIC_PATHS = new Set([
-  "/admin/login",
-  "/portal/login",
-  "/portal/auth/callback",
-]);
-
 /**
- * Gate for /admin/* and /portal/* .
+ * Gate for every /admin/* route (except the login page).
  *
- * Two disjoint audiences share one Supabase Auth project, so "signed in" is
- * never sufficient on its own:
+ * Being signed in is NOT sufficient: the account must also be on the
+ * ADMIN_EMAILS allowlist, because admin mutations run with the Supabase
+ * service role and bypass RLS. This mirrors the same check enforced inside
+ * every server action, so neither layer is the single point of failure.
  *
- *  - /admin  requires the account to be on the ADMIN_EMAILS allowlist, because
- *            admin mutations run with the service role and bypass RLS.
- *  - /portal requires the account to have a row in `clients`, AND to not be an
- *            admin address. Without the second half, a staff session would
- *            silently satisfy both roles.
- *
- * The same checks are repeated in every server action, so neither layer is a
- * single point of failure.
+ * /register/* is deliberately NOT matched here — those pages are gated by the
+ * secret link token itself, validated server-side on every request.
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (PUBLIC_PATHS.has(pathname)) return NextResponse.next();
 
-  const isPortal = pathname.startsWith("/portal");
-  const loginUrl = isPortal ? "/portal/login" : "/admin/login";
+  // The login page is always reachable.
+  if (pathname === "/admin/login") return NextResponse.next();
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   // Not configured yet → no one can authenticate; fail closed.
   if (!url || !key) {
-    return NextResponse.redirect(new URL(loginUrl, request.url));
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
   let response = NextResponse.next({ request });
@@ -71,38 +59,13 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return NextResponse.redirect(new URL(loginUrl, request.url));
-
-  const isAdmin = isAdminEmail(user.email);
-
-  if (!isPortal) {
-    if (!isAdmin) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
-    }
-    return response;
-  }
-
-  // Portal: staff accounts are not clients, and never get a portal session.
-  if (isAdmin) {
-    return NextResponse.redirect(new URL("/admin/projects", request.url));
-  }
-
-  // Must be a provisioned client. Read through the user's own session so RLS
-  // decides — a signed-in account with no `clients` row sees nothing and is
-  // bounced, which is what keeps a stray Supabase sign-up out of the portal.
-  const { data: client } = await supabase
-    .from("clients")
-    .select("id")
-    .eq("auth_user_id", user.id)
-    .maybeSingle();
-
-  if (!client) {
-    return NextResponse.redirect(new URL("/portal/login?denied=1", request.url));
+  if (!user || !isAdminEmail(user.email)) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/portal/:path*"],
+  matcher: ["/admin/:path*"],
 };

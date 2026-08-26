@@ -1,4 +1,4 @@
-import { DOMAIN_STATUS_LABEL, type DomainStatus } from "@/lib/portal";
+import { DOMAIN_STATUS_LABEL, type DomainStatus } from "@/lib/registrations";
 
 const TONE: Record<DomainStatus, string> = {
   submitted: "border-taupe bg-surface text-foreground/70",

@@ -4,13 +4,13 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check } from "lucide-react";
-import { saveDomainRegistration } from "@/lib/actions/portal";
+import { submitDomainRegistration } from "@/lib/actions/registrations";
 import {
   domainRegistrationSchema,
   type DomainRegistrationInput,
   type DomainRegistrationValues,
 } from "@/lib/schemas/portal";
-import type { DbDomainRegistration } from "@/lib/portal";
+import type { DbDomainRegistration } from "@/lib/registrations";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -18,14 +18,18 @@ function FieldError({ message }: { message?: string }) {
 }
 
 /**
- * Create-or-edit form for the client's single domain submission.
+ * Domain registration form, reached through a secret link.
  *
- * Note the payload: no client id, no status. Both are decided server-side from
- * the session, so there is nothing here for a tampered request to point at.
+ * The token is passed straight back to the server action, which re-resolves it
+ * — including re-checking expiry and revocation — on every submit. Holding this
+ * page open after a link is revoked therefore does not let a submission
+ * through.
  */
 export default function DomainRegistrationForm({
+  token,
   existing,
 }: {
+  token: string;
   existing: DbDomainRegistration | null;
 }) {
   const [pending, startTransition] = useTransition();
@@ -56,14 +60,18 @@ export default function DomainRegistrationForm({
     setError(null);
     setSaved(false);
     startTransition(async () => {
-      const result = await saveDomainRegistration(values);
+      const result = await submitDomainRegistration(token, values);
       if (result.ok) setSaved(true);
       else setError(result.error);
     });
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      className="flex flex-col gap-6"
+    >
       <div>
         <label htmlFor="domain_name" className="admin-label">
           Domain name
@@ -181,14 +189,20 @@ export default function DomainRegistrationForm({
       )}
 
       {error && (
-        <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
           {error}
         </p>
       )}
       {saved && (
-        <p role="status" className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-sm">
+        <p
+          role="status"
+          className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-sm"
+        >
           <Check size={15} strokeWidth={2.5} />
-          Saved. We&rsquo;ll review your submission and get back to you.
+          Saved. We&rsquo;ll review your details and get back to you.
         </p>
       )}
 
@@ -198,7 +212,7 @@ export default function DomainRegistrationForm({
           disabled={pending}
           className="inline-flex items-center justify-center rounded-full bg-foreground px-8 py-3.5 text-[12px] font-bold tracking-[0.16em] text-background uppercase transition-colors duration-300 hover:bg-charcoal disabled:opacity-50"
         >
-          {pending ? "Saving…" : existing ? "Update submission" : "Submit"}
+          {pending ? "Saving…" : existing ? "Update details" : "Submit"}
         </button>
       </div>
     </form>

@@ -101,8 +101,9 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // The client portal carries one client's private data — same rules.
-        source: "/portal/:path*",
+        // Link-gated registration pages carry one client's private data and are
+        // keyed on a secret in the URL — never cache, never index.
+        source: "/register/:path*",
         headers: [
           { key: "Cache-Control", value: "no-store, max-age=0" },
           { key: "X-Robots-Tag", value: "noindex, nofollow" },
