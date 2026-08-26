@@ -116,15 +116,9 @@ export default function DomainRegistrationForm({
         </div>
       </fieldset>
 
-      {/* Always on screen, per the client's reference form. They are only
-          *required* when the answer above is "No" — validated in zod and by a
-          CHECK constraint, so the rule holds even if the form is bypassed. */}
+      {/* Always on screen. Still only *required* when the answer above is
+          "No" — enforced in zod and by a CHECK constraint. */}
       <div className="flex flex-col gap-5 border border-border bg-surface/40 p-5">
-        <p className="text-sm leading-relaxed font-medium">
-          If you are not the owner of the domain/above business, please provide
-          domain owner details below.
-        </p>
-
         <div>
           <label htmlFor="owner_name" className="admin-label">
             Owner name
@@ -147,13 +141,9 @@ export default function DomainRegistrationForm({
             id="owner_nic_or_passport"
             autoComplete="off"
             className="admin-input"
-            aria-describedby="nic-help"
             aria-invalid={Boolean(errors.owner_nic_or_passport)}
             {...register("owner_nic_or_passport")}
           />
-          <p id="nic-help" className="mt-1.5 text-xs text-muted">
-            NIC number or Passport Number of domain owner
-          </p>
           <FieldError message={errors.owner_nic_or_passport?.message} />
         </div>
 
@@ -202,7 +192,7 @@ export default function DomainRegistrationForm({
           className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-sm"
         >
           <Check size={15} strokeWidth={2.5} />
-          Saved. We&rsquo;ll review your details and get back to you.
+          Saved.
         </p>
       )}
 

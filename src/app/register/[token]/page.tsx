@@ -53,12 +53,6 @@ export default async function RegisterPage({
     touchLinkOpened(link.id),
   ]);
 
-  const expires = new Date(link.expires_at).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   return (
     <div className="mx-auto max-w-2xl px-5 py-14 md:py-20">
       <header className="flex flex-col gap-8">
@@ -74,38 +68,16 @@ export default async function RegisterPage({
           <h1 className="mt-3 text-[clamp(1.8rem,4vw,2.6rem)] leading-[1.08] font-medium tracking-[-0.02em]">
             Hello {link.client_name}
           </h1>
-          <p className="mt-4 text-sm leading-relaxed text-muted">
-            Tell us the domain you&rsquo;d like registered and who owns it. You
-            can come back to this link and change your answers until{" "}
-            {expires}.
-          </p>
         </div>
 
-        {registration && (
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface/40 px-4 py-3">
-            <span className="text-sm text-muted">
-              You submitted <strong className="font-medium text-foreground">{registration.domain_name}</strong>
-            </span>
-            <StatusBadge status={registration.status} />
-          </div>
-        )}
-
-        {registration?.status === "needs_info" && (
-          <p className="rounded-lg border border-foreground/30 bg-surface px-4 py-3 text-sm">
-            We need a little more information before we can proceed — please
-            check the details below and update them.
-          </p>
-        )}
+        {/* State, not prose — the only thing kept beside the title. */}
+        {registration && <StatusBadge status={registration.status} />}
       </header>
 
       <div className="mt-10">
         <DomainRegistrationForm token={token} existing={registration} />
       </div>
 
-      <p className="mt-12 border-t border-border pt-6 text-xs leading-relaxed text-muted">
-        This link is personal to you — please don&rsquo;t forward it. Anyone who
-        has it can see and change these details.
-      </p>
     </div>
   );
 }
