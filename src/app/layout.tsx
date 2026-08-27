@@ -50,16 +50,26 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   icons: {
-    // SVG first for crisp rendering at any size; the 32px PNG covers browsers
-    // that will not take an SVG favicon.
+    /*
+     * The `?v=` suffix is deliberate. Browsers cache favicons far more
+     * aggressively than page assets — often ignoring cache headers and
+     * surviving a hard refresh — so replacing the file at the SAME URL leaves
+     * the old icon showing indefinitely. Changing the query makes it a new URL.
+     *
+     * BUMP THIS NUMBER whenever the icon artwork changes.
+     */
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+      // SVG first for crisp rendering at any size; the 32px PNG covers
+      // browsers that will not take an SVG favicon.
+      { url: "/icon.svg?v=2", type: "image/svg+xml" },
+      { url: "/icon-32.png?v=2", type: "image/png", sizes: "32x32" },
     ],
-    shortcut: "/icon-32.png",
+    shortcut: "/icon-32.png?v=2",
     // iOS ignores SVG here and composites onto a background, so this one is a
     // PNG with the brand cream baked in.
-    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    apple: [
+      { url: "/apple-icon.png?v=2", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
