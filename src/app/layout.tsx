@@ -50,9 +50,16 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    // SVG first for crisp rendering at any size; the 32px PNG covers browsers
+    // that will not take an SVG favicon.
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+    ],
+    shortcut: "/icon-32.png",
+    // iOS ignores SVG here and composites onto a background, so this one is a
+    // PNG with the brand cream baked in.
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 

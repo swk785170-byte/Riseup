@@ -1,8 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Rise Up Media">
-  <rect width="100" height="100" rx="22" fill="#0B0B0B" />
-  <g fill="#FFFDF8">
-    <circle cx="50" cy="24" r="13" />
-    <path d="M50 42 L74 63 L74 74 L50 53 L26 74 L26 63 Z" />
-    <path d="M50 62 L74 83 L74 94 L50 73 L26 94 L26 83 Z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Riseup Solutions">
+  <!--
+    The riseup mark on its own — no rounded-square container.
+
+    Geometry is the brand figure (native viewBox 0 0 30 80, bbox x4-26 y3-78),
+    scaled 1.2267x and translated so it sits centred in the square with an even
+    4-unit margin top and bottom.
+
+    The fill flips for dark browser chrome where that is supported; browsers
+    that ignore the media query keep the black default.
+  -->
+  <style>
+    .mark { fill: #0B0B0B; }
+    @media (prefers-color-scheme: dark) {
+      .mark { fill: #FFFDF8; }
+    }
+  </style>
+  <g class="mark" transform="translate(31.6 0.32) scale(1.2267)">
+    <circle cx="15" cy="14" r="11" />
+    <path d="M15 32 L26 43 L26 52 L15 41 L4 52 L4 43 Z" />
+    <path d="M15 58 L26 69 L26 78 L15 67 L4 78 L4 69 Z" />
   </g>
 </svg>

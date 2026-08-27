@@ -20,6 +20,30 @@
 export type PricingCategory = "web" | "lms";
 
 /** How one feature renders for one tier. */
+/**
+ * The struck-out "original" price for a tier card.
+ *
+ * Derived from the real price so the two can never drift, rounded to the
+ * nearest 500 so it does not read as an oddly precise number. Returns null
+ * when there is no discount configured, or when rounding would not produce a
+ * figure above the real price.
+ *
+ * PRESENTATIONAL ONLY — the real price in `tier.price` is what is quoted, and
+ * the comparison table deliberately does not use this.
+ */
+export function displayOriginalPrice(tier: PricingTier): string | null {
+  const percent = tier.discountPercent;
+  if (!percent || percent <= 0 || percent >= 100) return null;
+
+  const current = Number(tier.price.replace(/[^\d]/g, ""));
+  if (!Number.isFinite(current) || current <= 0) return null;
+
+  const original = Math.round(current / (1 - percent / 100) / 500) * 500;
+  if (original <= current) return null;
+
+  return `${original.toLocaleString("en-US")}/=`;
+}
+
 export type FeatureCell =
   | { kind: "included"; bullet?: string }
   | { kind: "value"; value: string; bullet: string }
@@ -35,10 +59,18 @@ export type PricingFeature = {
 export type PricingTier = {
   id: string;
   name: string;
-  /** The package price — the only figure shown publicly. */
+  /** The real package price. Never derived from anything below. */
   price: string;
   tagline: string;
   popular?: boolean;
+  /**
+   * Drives the crossed-out "original" price shown on the tier CARD only.
+   *
+   * The figure it produces is presentational: it is computed from `price`, is
+   * never quoted, invoiced or shown in the comparison table, and changing it
+   * cannot change what a client actually pays.
+   */
+  discountPercent?: number;
   /** Omitted features are treated as `none`. */
   features: Partial<Record<string, FeatureCell>>;
 };
@@ -89,6 +121,7 @@ export const WEB_GROUP: PricingGroup = {
       id: "starter",
       name: "Starter",
       price: "15,000/=",
+      discountPercent: 25,
       tagline: "A single-page presence with the essentials done properly.",
       features: {
         pages: { kind: "value", value: "1", bullet: "1 page" },
@@ -105,6 +138,7 @@ export const WEB_GROUP: PricingGroup = {
       id: "pro",
       name: "Pro",
       price: "25,000/=",
+      discountPercent: 25,
       popular: true,
       tagline:
         "A multi-page site with the integrations and polish most businesses need.",
@@ -135,6 +169,7 @@ export const WEB_GROUP: PricingGroup = {
       id: "premium",
       name: "Premium",
       price: "50,000/=",
+      discountPercent: 25,
       tagline:
         "The full build — advanced motion, video and search performance.",
       features: {
@@ -204,6 +239,7 @@ export const LMS_GROUP: PricingGroup = {
       id: "starter",
       name: "Starter",
       price: "90,000/=",
+      discountPercent: 25,
       tagline:
         "Everything to run classes online — scheduling, tutes and recordings.",
       features: {
@@ -230,6 +266,7 @@ export const LMS_GROUP: PricingGroup = {
       id: "pro",
       name: "Pro",
       price: "120,000/=",
+      discountPercent: 25,
       popular: true,
       tagline:
         "Adds student profiles, lesson packs and revenue tracking for growing classes.",
@@ -262,6 +299,7 @@ export const LMS_GROUP: PricingGroup = {
       id: "premium",
       name: "Premium",
       price: "150,000/=",
+      discountPercent: 25,
       tagline:
         "The complete platform — chat, bulk SMS, AI support and unlimited admins.",
       features: {
