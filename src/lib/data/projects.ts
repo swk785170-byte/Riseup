@@ -96,3 +96,29 @@ export async function getAdminProjectById(
     return null;
   }
 }
+
+/**
+ * Newest `updated_at` across all projects, for sitemap freshness.
+ *
+ * Returns null when there are no projects or the query fails — the caller then
+ * omits `lastModified` rather than substituting "now", which would be a false
+ * freshness signal.
+ */
+export async function getLatestProjectUpdate(): Promise<Date | null> {
+  try {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select("updated_at")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error || !data) return null;
+    const row = data as { updated_at: string | null };
+    if (!row.updated_at) return null;
+    const date = new Date(row.updated_at);
+    return Number.isNaN(date.getTime()) ? null : date;
+  } catch {
+    return null;
+  }
+}
