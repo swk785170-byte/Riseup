@@ -238,7 +238,7 @@ export const LMS_GROUP: PricingGroup = {
     {
       id: "starter",
       name: "Starter",
-      price: "90,000/=",
+      price: "50,000/=",
       discountPercent: 25,
       tagline:
         "Everything to run classes online — scheduling, tutes and recordings.",
@@ -265,7 +265,7 @@ export const LMS_GROUP: PricingGroup = {
     {
       id: "pro",
       name: "Pro",
-      price: "120,000/=",
+      price: "90,000/=",
       discountPercent: 25,
       popular: true,
       tagline:
@@ -298,7 +298,7 @@ export const LMS_GROUP: PricingGroup = {
     {
       id: "premium",
       name: "Premium",
-      price: "150,000/=",
+      price: "120,000/=",
       discountPercent: 25,
       tagline:
         "The complete platform — chat, bulk SMS, AI support and unlimited admins.",
