@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Logo from "@/components/Logo";
-import RegisterNav from "@/components/register/RegisterNav";
 import { resolveLink, touchLinkOpened } from "@/lib/registration-access";
 
 // Never cached: keyed on a secret, shows one client's data.
@@ -56,7 +55,6 @@ export default async function RegisterLayout({
         <h1 className="text-[clamp(1.8rem,4vw,2.6rem)] leading-[1.08] font-medium tracking-[-0.02em]">
           Hello {link.client_name}
         </h1>
-        <RegisterNav token={token} />
       </header>
 
       <div className="mt-10">{children}</div>

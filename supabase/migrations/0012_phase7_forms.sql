@@ -2,7 +2,11 @@
 -- Riseup Solutions — Phase 7: two client forms
 --
 --   1. Domain Registration — six fields, ALL required.
---   2. SMS Lenz Approval   — four fields, ALL optional (two are file uploads).
+--   2. SMS Lenz Approval   — all optional: sender ID, address, both sides of
+--      the ID card, and a logo.
+--
+-- Both are presented as one form with two tabs and a single submit, so a
+-- client fills them in one pass without losing what they typed.
 --
 -- NOTE ON THE DOMAIN REGISTRATION RESHAPE
 -- The brief said to replace the `domain_registrations` table. It is NOT dropped
@@ -27,15 +31,19 @@ alter table public.domain_registrations
   add column if not exists address       text,
   add column if not exists id_number     text;
 
--- Carry across what the old owner fields already captured, so existing
--- submissions arrive partly filled rather than blank.
-update public.domain_registrations
-set
-  full_name    = coalesce(full_name, owner_name),
-  email        = coalesce(email, owner_email),
-  phone_number = coalesce(phone_number, owner_contact_number),
-  id_number    = coalesce(id_number, owner_nic_or_passport)
-where business_name is null;
+/*
+ * Deliberately NO backfill.
+ *
+ * Copying the old owner_* values across would fill four of the six new columns
+ * (full_name, email, phone_number, id_number) while leaving business_name and
+ * address null — there is no source for those. That is a partial row, which
+ * the all-or-nothing constraint below rejects, so the migration would fail on
+ * the existing data.
+ *
+ * Legacy rows therefore keep all six new columns null (the "none" branch) and
+ * their answers stay in the owner_* columns, where the admin detail page
+ * already displays them and the client form already prefills from them.
+ */
 
 -- `domain_name` loses its NOT NULL: the Phase 7 form no longer collects it,
 -- but the column and its existing values are kept for the legacy rows.
@@ -84,10 +92,12 @@ create table if not exists public.sms_lenz_approvals (
   link_id           uuid not null unique
                       references public.registration_links(id) on delete cascade,
 
-  sender_id         text check (sender_id is null or length(sender_id) <= 80),
-  address           text check (address is null or length(address) <= 400),
-  id_card_photo_url text check (id_card_photo_url is null or length(id_card_photo_url) <= 1000),
-  logo_url          text check (logo_url is null or length(logo_url) <= 1000),
+  sender_id          text check (sender_id is null or length(sender_id) <= 80),
+  address            text check (address is null or length(address) <= 400),
+  -- Both sides of the ID card, plus the logo. All optional.
+  id_card_front_url  text check (id_card_front_url is null or length(id_card_front_url) <= 1000),
+  id_card_back_url   text check (id_card_back_url is null or length(id_card_back_url) <= 1000),
+  logo_url           text check (logo_url is null or length(logo_url) <= 1000),
 
   status            text not null default 'submitted'
                       check (status in ('submitted', 'reviewed', 'needs_info')),

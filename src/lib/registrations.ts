@@ -47,7 +47,8 @@ export type DbSmsLenzApproval = {
   link_id: string;
   sender_id: string | null;
   address: string | null;
-  id_card_photo_url: string | null;
+  id_card_front_url: string | null;
+  id_card_back_url: string | null;
   logo_url: string | null;
   status: DomainStatus;
   submitted_at: string;

@@ -230,8 +230,12 @@ export default async function AdminRegistrationDetailPage({
             </dl>
             <div className="mt-5 flex flex-wrap gap-8">
               <UploadPreview
-                label="ID card photo"
-                url={smsLenz.id_card_photo_url}
+                label="ID card — front"
+                url={smsLenz.id_card_front_url}
+              />
+              <UploadPreview
+                label="ID card — back"
+                url={smsLenz.id_card_back_url}
               />
               <UploadPreview label="Logo" url={smsLenz.logo_url} />
             </div>

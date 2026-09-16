@@ -13,7 +13,7 @@ const LINK_COLS =
 const REG_COLS =
   "id, link_id, business_name, full_name, email, phone_number, address, id_number, domain_name, is_owner, owner_name, owner_nic_or_passport, owner_email, owner_contact_number, status, submitted_at, updated_at";
 const SMS_COLS =
-  "id, link_id, sender_id, address, id_card_photo_url, logo_url, status, submitted_at, updated_at";
+  "id, link_id, sender_id, address, id_card_front_url, id_card_back_url, logo_url, status, submitted_at, updated_at";
 
 /** Reads the submission behind an already-validated link. */
 export async function getRegistrationForLink(

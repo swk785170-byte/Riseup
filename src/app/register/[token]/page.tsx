@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import DomainRegistrationForm from "@/components/register/DomainRegistrationForm";
+import ClientForms from "@/components/register/ClientForms";
 import StatusBadge from "@/components/register/StatusBadge";
 import { resolveLink } from "@/lib/registration-access";
-import { getRegistrationForLink } from "@/lib/data/registrations";
+import {
+  getRegistrationForLink,
+  getSmsLenzForLink,
+} from "@/lib/data/registrations";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Domain Registration — Riseup Solutions",
+  title: "Client Forms — Riseup Solutions",
   robots: { index: false, follow: false },
 };
 
-export default async function DomainRegistrationPage({
+export default async function RegisterFormsPage({
   params,
 }: {
   params: Promise<{ token: string }>;
@@ -22,17 +25,23 @@ export default async function DomainRegistrationPage({
   const link = await resolveLink(token);
   if (!link) return null;
 
-  const registration = await getRegistrationForLink(link.id);
+  const [registration, smsLenz] = await Promise.all([
+    getRegistrationForLink(link.id),
+    getSmsLenzForLink(link.id),
+  ]);
 
   return (
     <>
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <p className="text-[11px] font-bold tracking-[0.3em] text-muted uppercase">
-          Domain Registration
-        </p>
-        {registration && <StatusBadge status={registration.status} />}
-      </div>
-      <DomainRegistrationForm token={token} existing={registration} />
+      {registration && (
+        <div className="mb-6 flex justify-end">
+          <StatusBadge status={registration.status} />
+        </div>
+      )}
+      <ClientForms
+        token={token}
+        registration={registration}
+        smsLenz={smsLenz}
+      />
     </>
   );
 }
