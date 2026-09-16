@@ -25,7 +25,6 @@ const NAV_LINKS: NavItem[] = [
       { label: "Smart Systems", target: "/services/smart-systems" },
     ],
   },
-  { label: "Pricing", target: "/pricing" },
   { label: "Blog", target: "/blog" },
 ];
 

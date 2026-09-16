@@ -98,12 +98,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: null,
     },
     {
-      path: "/pricing",
-      priority: 0.9,
-      changeFrequency: "monthly",
-      lastModified: null,
-    },
-    {
       path: "/about",
       priority: 0.7,
       changeFrequency: "monthly",

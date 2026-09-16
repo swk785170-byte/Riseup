@@ -1,38 +1,36 @@
 import type { Metadata } from "next";
-import DomainRegistrationForm from "@/components/register/DomainRegistrationForm";
+import SmsLenzApprovalForm from "@/components/register/SmsLenzApprovalForm";
 import StatusBadge from "@/components/register/StatusBadge";
 import { resolveLink } from "@/lib/registration-access";
-import { getRegistrationForLink } from "@/lib/data/registrations";
+import { getSmsLenzForLink } from "@/lib/data/registrations";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Domain Registration — Riseup Solutions",
+  title: "SMS Lenz Approval — Riseup Solutions",
   robots: { index: false, follow: false },
 };
 
-export default async function DomainRegistrationPage({
+export default async function SmsLenzApprovalPage({
   params,
 }: {
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  // The layout already rejected an invalid token; this is the same lookup
-  // again so the page never trusts a value it did not verify itself.
   const link = await resolveLink(token);
   if (!link) return null;
 
-  const registration = await getRegistrationForLink(link.id);
+  const approval = await getSmsLenzForLink(link.id);
 
   return (
     <>
       <div className="mb-6 flex items-center justify-between gap-3">
         <p className="text-[11px] font-bold tracking-[0.3em] text-muted uppercase">
-          Domain Registration
+          SMS Lenz Approval
         </p>
-        {registration && <StatusBadge status={registration.status} />}
+        {approval && <StatusBadge status={approval.status} />}
       </div>
-      <DomainRegistrationForm token={token} existing={registration} />
+      <SmsLenzApprovalForm token={token} existing={approval} />
     </>
   );
 }

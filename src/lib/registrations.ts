@@ -18,21 +18,52 @@ export type DbRegistrationLink = {
 export type DbDomainRegistration = {
   id: string;
   link_id: string;
-  domain_name: string;
+
+  /* Phase 7 field set — all six required on submit, nullable in the column
+     only so the rows that predate the change survive. */
+  business_name: string | null;
+  full_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  address: string | null;
+  id_number: string | null;
+
+  /* Legacy columns kept so earlier submissions keep their data. A row with
+     `business_name === null` was captured by the old form. */
+  domain_name: string | null;
   is_owner: boolean;
   owner_name: string | null;
   owner_nic_or_passport: string | null;
   owner_email: string | null;
   owner_contact_number: string | null;
+
   status: DomainStatus;
   submitted_at: string;
   updated_at: string;
 };
 
-/** A link plus its submission, for the admin list. */
+export type DbSmsLenzApproval = {
+  id: string;
+  link_id: string;
+  sender_id: string | null;
+  address: string | null;
+  id_card_photo_url: string | null;
+  logo_url: string | null;
+  status: DomainStatus;
+  submitted_at: string;
+  updated_at: string;
+};
+
+/** True when a submission was captured by the pre-Phase-7 form. */
+export function isLegacyRegistration(row: DbDomainRegistration): boolean {
+  return row.business_name === null;
+}
+
+/** A link plus both of its submissions, for the admin views. */
 export type LinkSummary = {
   link: DbRegistrationLink;
   registration: DbDomainRegistration | null;
+  smsLenz: DbSmsLenzApproval | null;
 };
 
 export const DOMAIN_STATUS_LABEL: Record<DomainStatus, string> = {

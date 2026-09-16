@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { normaliseDomain } from "@/lib/domain";
 
 /**
- * Server-side validation for link-based domain registration.
+ * Server-side validation for the two client forms.
  *
  * Note what is absent: no schema accepts a `link_id`, a `token_hash` or a
  * `status`. The link is resolved from the URL token in trusted server code and
@@ -12,64 +11,80 @@ import { normaliseDomain } from "@/lib/domain";
 
 const trimmed = (max: number) => z.string().trim().max(max);
 
-export const domainRegistrationSchema = z
-  .object({
-    /*
-     * Accepts whatever the client pastes — a full URL, a www host, a trailing
-     * slash — and normalises it rather than refusing. The only remaining rule
-     * is the 3-253 character bound the database column enforces, so the two
-     * can never disagree and produce an opaque constraint error.
-     */
-    domain_name: z
-      .string()
-      .trim()
-      .max(400, "That is too long to be a domain name")
-      .transform(normaliseDomain)
-      .pipe(
-        z
-          .string()
-          .min(3, "Enter the domain name")
-          .max(253, "That is too long to be a domain name"),
-      ),
-    is_owner: z.boolean(),
-    owner_name: trimmed(120).optional().or(z.literal("")),
-    owner_nic_or_passport: trimmed(40).optional().or(z.literal("")),
-    owner_email: trimmed(200).optional().or(z.literal("")),
-    owner_contact_number: trimmed(40).optional().or(z.literal("")),
-  })
-  .superRefine((values, ctx) => {
-    if (values.is_owner) return;
-    // Mirrors the `owner_details_required` CHECK constraint, so the rule holds
-    // whether the write arrives through the form or another route.
-    const required = [
-      ["owner_name", "Owner name is required"],
-      ["owner_nic_or_passport", "NIC or passport number is required"],
-      ["owner_email", "Owner email is required"],
-      ["owner_contact_number", "Contact number is required"],
-    ] as const;
+/* ------------------------------------------------------------------ */
+/*  Domain registration — every field REQUIRED                         */
+/* ------------------------------------------------------------------ */
 
-    for (const [field, message] of required) {
-      if (!values[field] || values[field].trim().length === 0) {
-        ctx.addIssue({ code: "custom", message, path: [field] });
-      }
-    }
-
-    if (
-      values.owner_email &&
-      !z.string().email().safeParse(values.owner_email).success
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Enter a valid email",
-        path: ["owner_email"],
-      });
-    }
-  });
+export const domainRegistrationSchema = z.object({
+  business_name: trimmed(160).min(1, "Business name is required"),
+  full_name: trimmed(120).min(1, "Full name is required"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Enter a valid email")
+    .max(200),
+  phone_number: trimmed(40).min(1, "Phone number is required"),
+  address: trimmed(400).min(1, "Address is required"),
+  id_number: trimmed(40).min(1, "ID number is required"),
+});
 
 export type DomainRegistrationInput = z.input<typeof domainRegistrationSchema>;
 export type DomainRegistrationValues = z.output<typeof domainRegistrationSchema>;
 
-/** Admin form for minting a link. */
+/* ------------------------------------------------------------------ */
+/*  SMS Lenz approval — every field OPTIONAL                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Nothing here is required, so the whole form may be submitted empty. Only the
+ * *shape* of a value is checked — a client who fills one field in is not then
+ * forced to fill the rest.
+ */
+export const smsLenzApprovalSchema = z.object({
+  sender_id: trimmed(80).optional().or(z.literal("")),
+  address: trimmed(400).optional().or(z.literal("")),
+});
+
+export type SmsLenzApprovalInput = z.input<typeof smsLenzApprovalSchema>;
+export type SmsLenzApprovalValues = z.output<typeof smsLenzApprovalSchema>;
+
+/* ------------------------------------------------------------------ */
+/*  Uploads                                                            */
+/* ------------------------------------------------------------------ */
+
+/** Mirrors the `sms-lenz-uploads` bucket limits, which Storage enforces too. */
+export const UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
+
+/**
+ * SVG is deliberately absent: it is XML and can carry <script>, which would be
+ * stored XSS served from the Storage origin.
+ */
+export const UPLOAD_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+] as const;
+
+export type UploadMimeType = (typeof UPLOAD_MIME_TYPES)[number];
+
+export function isUploadMimeType(value: string): value is UploadMimeType {
+  return (UPLOAD_MIME_TYPES as readonly string[]).includes(value);
+}
+
+/** Extension is derived from the validated MIME type, never from the filename. */
+export const MIME_EXTENSION: Record<UploadMimeType, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/avif": "avif",
+};
+
+/* ------------------------------------------------------------------ */
+/*  Admin                                                              */
+/* ------------------------------------------------------------------ */
+
 export const newLinkSchema = z.object({
   client_name: trimmed(120).min(1, "Client name is required"),
   company_name: trimmed(160).optional().or(z.literal("")),

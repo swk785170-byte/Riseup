@@ -11,20 +11,36 @@ import {
   type DomainRegistrationValues,
 } from "@/lib/schemas/portal";
 import type { DbDomainRegistration } from "@/lib/registrations";
-import { normaliseDomain } from "@/lib/domain";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return <p className="mt-1.5 text-xs text-red-600">{message}</p>;
 }
 
+type Field = {
+  name: keyof DomainRegistrationValues;
+  label: string;
+  type?: string;
+  inputMode?: "text" | "tel" | "email";
+  autoComplete?: string;
+};
+
+/** All six are required — there is no conditional branching on this form. */
+const FIELDS: Field[] = [
+  { name: "business_name", label: "Business", autoComplete: "organization" },
+  { name: "full_name", label: "Full name", autoComplete: "name" },
+  { name: "email", label: "Email", type: "email", inputMode: "email", autoComplete: "email" },
+  { name: "phone_number", label: "Phone no.", inputMode: "tel", autoComplete: "tel" },
+  { name: "address", label: "Address", autoComplete: "street-address" },
+  { name: "id_number", label: "ID number" },
+];
+
 /**
- * Domain registration form, reached through a secret link.
+ * Domain registration, reached through a secret link.
  *
  * The token is passed straight back to the server action, which re-resolves it
- * — including re-checking expiry and revocation — on every submit. Holding this
- * page open after a link is revoked therefore does not let a submission
- * through.
+ * — including re-checking expiry and revocation — on every submit, so holding
+ * this page open after a link is revoked does not let a submission through.
  */
 export default function DomainRegistrationForm({
   token,
@@ -40,26 +56,22 @@ export default function DomainRegistrationForm({
   const {
     register,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm<DomainRegistrationInput, unknown, DomainRegistrationValues>({
     resolver: zodResolver(domainRegistrationSchema),
     defaultValues: {
-      domain_name: existing?.domain_name ?? "",
-      is_owner: existing?.is_owner ?? true,
-      owner_name: existing?.owner_name ?? "",
-      owner_nic_or_passport: existing?.owner_nic_or_passport ?? "",
-      owner_email: existing?.owner_email ?? "",
-      owner_contact_number: existing?.owner_contact_number ?? "",
+      business_name: existing?.business_name ?? "",
+      // A submission from before this form changed has no business name, but
+      // may still carry a contact from the old owner fields — prefill from
+      // whichever is present so the client is not retyping what we already have.
+      full_name: existing?.full_name ?? existing?.owner_name ?? "",
+      email: existing?.email ?? existing?.owner_email ?? "",
+      phone_number:
+        existing?.phone_number ?? existing?.owner_contact_number ?? "",
+      address: existing?.address ?? "",
+      id_number: existing?.id_number ?? existing?.owner_nic_or_passport ?? "",
     },
   });
-
-  const isOwner = watch("is_owner");
-
-  // The schema normalises on submit; doing it on blur too means the client can
-  // see what will actually be saved instead of it changing silently behind them.
-  const domainField = register("domain_name");
 
   function onSubmit(values: DomainRegistrationValues) {
     setError(null);
@@ -77,118 +89,23 @@ export default function DomainRegistrationForm({
       noValidate
       className="register-form flex flex-col gap-6"
     >
-      <div>
-        <label htmlFor="domain_name" className="admin-label">
-          Domain name
-        </label>
-        <input
-          id="domain_name"
-          inputMode="url"
-          autoComplete="off"
-          placeholder="example.com"
-          className="admin-input"
-          aria-invalid={Boolean(errors.domain_name)}
-          {...domainField}
-          onBlur={(event) => {
-            const cleaned = normaliseDomain(event.target.value);
-            if (cleaned && cleaned !== event.target.value) {
-              setValue("domain_name", cleaned, { shouldValidate: true });
-            }
-            void domainField.onBlur(event);
-          }}
-        />
-        <FieldError message={errors.domain_name?.message} />
-      </div>
-
-      <fieldset>
-        <legend className="admin-label">
-          Are you the owner of this domain/business?
-        </legend>
-        <div className="mt-2 flex gap-3">
-          {[
-            { value: true, label: "Yes" },
-            { value: false, label: "No" },
-          ].map((option) => (
-            <button
-              key={option.label}
-              type="button"
-              aria-pressed={isOwner === option.value}
-              onClick={() =>
-                setValue("is_owner", option.value, { shouldValidate: true })
-              }
-              className={`min-w-24 rounded-full border px-6 py-2.5 text-[12px] font-bold tracking-[0.14em] uppercase transition-colors duration-300 ${
-                isOwner === option.value
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-taupe bg-surface text-foreground/70 hover:border-foreground"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </fieldset>
-
-      {/* Always on screen. Still only *required* when the answer above is
-          "No" — enforced in zod and by a CHECK constraint. */}
-      <div className="flex flex-col gap-5 border border-border bg-surface/40 p-5">
-        <div>
-          <label htmlFor="owner_name" className="admin-label">
-            Owner name
+      {FIELDS.map((field) => (
+        <div key={field.name}>
+          <label htmlFor={field.name} className="admin-label">
+            {field.label}
           </label>
           <input
-            id="owner_name"
-            autoComplete="off"
+            id={field.name}
+            type={field.type ?? "text"}
+            inputMode={field.inputMode}
+            autoComplete={field.autoComplete ?? "off"}
             className="admin-input"
-            aria-invalid={Boolean(errors.owner_name)}
-            {...register("owner_name")}
+            aria-invalid={Boolean(errors[field.name])}
+            {...register(field.name)}
           />
-          <FieldError message={errors.owner_name?.message} />
+          <FieldError message={errors[field.name]?.message} />
         </div>
-
-        <div>
-          <label htmlFor="owner_nic_or_passport" className="admin-label">
-            Owner NIC/PP number
-          </label>
-          <input
-            id="owner_nic_or_passport"
-            autoComplete="off"
-            className="admin-input"
-            aria-invalid={Boolean(errors.owner_nic_or_passport)}
-            {...register("owner_nic_or_passport")}
-          />
-          <FieldError message={errors.owner_nic_or_passport?.message} />
-        </div>
-
-        <div>
-          <label htmlFor="owner_email" className="admin-label">
-            Owner email
-          </label>
-          <input
-            id="owner_email"
-            type="email"
-            autoComplete="off"
-            className="admin-input"
-            aria-invalid={Boolean(errors.owner_email)}
-            {...register("owner_email")}
-          />
-          <FieldError message={errors.owner_email?.message} />
-        </div>
-
-        <div>
-          <label htmlFor="owner_contact_number" className="admin-label">
-            Contact number
-          </label>
-          <input
-            id="owner_contact_number"
-            inputMode="tel"
-            autoComplete="off"
-            className="admin-input"
-            aria-invalid={Boolean(errors.owner_contact_number)}
-            {...register("owner_contact_number")}
-          />
-          <FieldError message={errors.owner_contact_number?.message} />
-        </div>
-      </div>
+      ))}
 
       {error && (
         <p

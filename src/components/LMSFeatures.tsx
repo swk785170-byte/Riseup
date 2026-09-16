@@ -23,7 +23,7 @@ const ADMIN_FEATURE_IDS = new Set([
 
 /**
  * The union of every LMS tier's features — i.e. everything the ecosystem does,
- * with no tier gating (that stays on the Pricing page). Sourced from the same
+ * with no tier gating. Sourced from the same
  * `LMS_GROUP` the pricing table renders, so the two can never describe the
  * product differently.
  */
@@ -74,7 +74,7 @@ export default function LMSFeatures() {
           center
           eyebrow="What's Included"
           title="Everything in the platform"
-          sub="The full feature set across the LMS and its admin panel. Which tier includes what is on the pricing page — this is the whole ecosystem."
+          sub="The full feature set across the LMS and its admin panel — the whole ecosystem, end to end."
         />
 
         <motion.div

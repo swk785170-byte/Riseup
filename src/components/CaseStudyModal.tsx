@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, X } from "lucide-react";
 import { BrowserMock } from "./ProjectMock";
 import { useLenis, useScrollTo } from "./SmoothScroll";
+import ProjectGallery from "./ProjectGallery";
 import { EASE_PREMIUM } from "@/lib/motion";
 import type { MockVariant, Project, Tint } from "@/lib/projects";
 
@@ -234,23 +235,9 @@ export default function CaseStudyModal({
 
             {/* Every uploaded gallery image, uncropped. Omitted entirely when
                 the project has no gallery beyond its thumbnail. */}
-            {gallery.length > 0 && (
-              <div className="mt-14 grid gap-5 sm:grid-cols-2">
-                {gallery.map((url, i) => (
-                  <div
-                    key={url}
-                    className="aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-surface"
-                  >
-                    <ProjectMedia
-                      src={url}
-                      alt={`${project.name} — screen ${i + 1}`}
-                      tint={project.tint}
-                      variant={project.secondaryMock}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Thumbnail grid + full-screen lightbox. The hero image above and
+                the challenge/solution/results layout are untouched. */}
+            <ProjectGallery images={gallery} name={project.name} />
 
             <div className="mt-14 flex flex-col items-start justify-between gap-6 rounded-2xl bg-surface/70 p-8 sm:flex-row sm:items-center md:p-10">
               <p className="max-w-md text-lg font-medium tracking-tight">

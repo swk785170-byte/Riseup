@@ -4,7 +4,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import GrainOverlay from "@/components/GrainOverlay";
 import SplashScreen from "@/components/SplashScreen";
 import SettingsProvider from "@/components/SettingsProvider";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import ContactDock from "@/components/ContactDock";
 import { getSiteSettings } from "@/lib/data/site";
 import { siteUrl } from "@/lib/site-url";
 import JsonLd, {
@@ -118,7 +118,7 @@ export default async function RootLayout({
           {/* Brief branded loading splash on full page loads (not /admin) */}
           <SplashScreen />
           {/* Floating WhatsApp contact (not /admin, hidden if no number set) */}
-          <WhatsAppButton />
+          <ContactDock />
         </SettingsProvider>
       </body>
     </html>

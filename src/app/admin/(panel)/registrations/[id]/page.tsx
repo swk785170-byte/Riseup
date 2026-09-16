@@ -1,8 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getLinkDetail } from "@/lib/data/registrations";
-import { linkState } from "@/lib/registrations";
+import { isLegacyRegistration, linkState } from "@/lib/registrations";
 import StatusBadge from "@/components/register/StatusBadge";
 import LinkActions from "@/components/admin/LinkActions";
 
@@ -33,6 +34,41 @@ function stamp(iso: string | null): string | null {
       });
 }
 
+/** Thumbnail for an uploaded file, or a note that none was attached. */
+function UploadPreview({
+  label,
+  url,
+}: {
+  label: string;
+  url: string | null;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-[11px] font-bold tracking-[0.14em] text-muted uppercase">
+        {label}
+      </p>
+      {url ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative block h-40 w-full max-w-64 overflow-hidden border border-border bg-surface transition-colors hover:border-foreground"
+        >
+          <Image
+            src={url}
+            alt={label}
+            fill
+            sizes="256px"
+            className="object-contain p-2"
+          />
+        </a>
+      ) : (
+        <p className="text-sm text-muted">Not uploaded</p>
+      )}
+    </div>
+  );
+}
+
 export default async function AdminRegistrationDetailPage({
   params,
 }: {
@@ -42,8 +78,22 @@ export default async function AdminRegistrationDetailPage({
   const detail = await getLinkDetail(id);
   if (!detail) notFound();
 
-  const { link, registration } = detail;
+  const { link, registration, smsLenz } = detail;
   const state = linkState(link);
+
+  // A submission from before the form was reshaped has no business name; its
+  // data lives in the legacy columns instead.
+  const legacy = registration ? isLegacyRegistration(registration) : false;
+
+  const requiredComplete = Boolean(
+    registration &&
+      registration.business_name &&
+      registration.full_name &&
+      registration.email &&
+      registration.phone_number &&
+      registration.address &&
+      registration.id_number,
+  );
 
   return (
     <div className="flex flex-col gap-10">
@@ -85,41 +135,111 @@ export default async function AdminRegistrationDetailPage({
         </p>
       </section>
 
+      {/* ---------------- Domain Registration (required) ---------------- */}
       <section>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[11px] font-bold tracking-[0.2em] text-muted uppercase">
-            Submission
+            Domain Registration
+            <span className="ml-2 font-normal normal-case text-muted">
+              required
+            </span>
           </h2>
-          {registration && <StatusBadge status={registration.status} />}
+          <div className="flex items-center gap-2">
+            {registration && (
+              <span
+                className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.14em] uppercase ${
+                  requiredComplete
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-foreground/40 bg-background text-foreground"
+                }`}
+              >
+                {requiredComplete ? "Complete" : "Incomplete"}
+              </span>
+            )}
+            {registration && <StatusBadge status={registration.status} />}
+          </div>
         </div>
 
         {registration ? (
-          <dl className="mt-3">
-            <Row label="Domain name" value={registration.domain_name} />
-            <Row
-              label="Client is the owner"
-              value={registration.is_owner ? "Yes" : "No"}
-            />
-            {!registration.is_owner && (
-              <>
-                <Row label="Owner name" value={registration.owner_name} />
-                <Row
-                  label="Owner NIC/PP number"
-                  value={registration.owner_nic_or_passport}
-                />
-                <Row label="Owner email" value={registration.owner_email} />
-                <Row
-                  label="Owner contact number"
-                  value={registration.owner_contact_number}
-                />
-              </>
+          <>
+            <dl className="mt-3">
+              <Row label="Business" value={registration.business_name} />
+              <Row label="Full name" value={registration.full_name} />
+              <Row label="Email" value={registration.email} />
+              <Row label="Phone no." value={registration.phone_number} />
+              <Row label="Address" value={registration.address} />
+              <Row label="ID number" value={registration.id_number} />
+              <Row label="Submitted" value={stamp(registration.submitted_at)} />
+              <Row label="Last updated" value={stamp(registration.updated_at)} />
+            </dl>
+
+            {legacy && (
+              <div className="mt-4 rounded-lg border border-foreground/30 bg-surface px-4 py-3">
+                <p className="text-sm">
+                  Submitted on the previous version of this form, which asked
+                  different questions. The original answers are kept below —
+                  ask the client to reopen their link to complete the current
+                  fields.
+                </p>
+                <dl className="mt-3">
+                  <Row label="Domain name" value={registration.domain_name} />
+                  <Row
+                    label="Client was the owner"
+                    value={registration.is_owner ? "Yes" : "No"}
+                  />
+                  <Row label="Owner name" value={registration.owner_name} />
+                  <Row
+                    label="Owner NIC/PP"
+                    value={registration.owner_nic_or_passport}
+                  />
+                  <Row label="Owner email" value={registration.owner_email} />
+                  <Row
+                    label="Owner contact"
+                    value={registration.owner_contact_number}
+                  />
+                </dl>
+              </div>
             )}
-            <Row label="Submitted" value={stamp(registration.submitted_at)} />
-            <Row label="Last updated" value={stamp(registration.updated_at)} />
-          </dl>
+          </>
         ) : (
           <p className="mt-3 rounded-lg border border-border bg-surface/40 px-4 py-6 text-center text-sm text-muted">
             Nothing submitted through this link yet.
+          </p>
+        )}
+      </section>
+
+      {/* ---------------- SMS Lenz Approval (optional) ---------------- */}
+      <section>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-[11px] font-bold tracking-[0.2em] text-muted uppercase">
+            SMS Lenz Approval
+            <span className="ml-2 font-normal normal-case text-muted">
+              optional
+            </span>
+          </h2>
+          {smsLenz && <StatusBadge status={smsLenz.status} />}
+        </div>
+
+        {smsLenz ? (
+          <>
+            <dl className="mt-3">
+              <Row label="Sender ID" value={smsLenz.sender_id} />
+              <Row label="Address" value={smsLenz.address} />
+              <Row label="Submitted" value={stamp(smsLenz.submitted_at)} />
+              <Row label="Last updated" value={stamp(smsLenz.updated_at)} />
+            </dl>
+            <div className="mt-5 flex flex-wrap gap-8">
+              <UploadPreview
+                label="ID card photo"
+                url={smsLenz.id_card_photo_url}
+              />
+              <UploadPreview label="Logo" url={smsLenz.logo_url} />
+            </div>
+          </>
+        ) : (
+          <p className="mt-3 rounded-lg border border-border bg-surface/40 px-4 py-6 text-center text-sm text-muted">
+            Not submitted — this form is optional, so the client may have
+            skipped it deliberately.
           </p>
         )}
       </section>

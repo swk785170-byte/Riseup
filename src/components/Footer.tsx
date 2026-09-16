@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { useLenis, useScrollTo } from "./SmoothScroll";
 import { useSiteSettings } from "./SettingsProvider";
+import { PHONE_NUMBERS } from "@/lib/contact";
 import { EASE_PREMIUM } from "@/lib/motion";
 import type { SiteSettings } from "@/lib/settings";
 
@@ -220,6 +221,31 @@ export default function Footer() {
               </a>
             ))}
           </div>
+        </div>
+
+        {/* Call us — the same three numbers the floating Call button dials,
+            from one shared source so they cannot drift apart. */}
+        <div className="mt-10 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-center sm:gap-3">
+          <span className="text-[11px] font-bold tracking-[0.25em] text-charcoal uppercase">
+            Call us
+          </span>
+          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+            {PHONE_NUMBERS.map((number, index) => (
+              <span key={number.tel} className="flex items-center gap-2">
+                <a
+                  href={`tel:${number.tel}`}
+                  className="text-sm text-charcoal underline-offset-4 transition-colors duration-300 hover:text-foreground hover:underline"
+                >
+                  {number.display}
+                </a>
+                {index < PHONE_NUMBERS.length - 1 && (
+                  <span aria-hidden className="text-taupe">
+                    /
+                  </span>
+                )}
+              </span>
+            ))}
+          </p>
         </div>
 
         {/* Divider */}
