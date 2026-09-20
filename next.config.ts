@@ -75,6 +75,20 @@ const nextConfig: NextConfig = {
     // Rewrites barrel imports to deep paths so only the icons/helpers actually
     // used are bundled — lucide-react alone is ~38MB unpacked.
     optimizePackageImports: ["lucide-react", "framer-motion", "gsap"],
+    serverActions: {
+      /*
+       * The client-forms submit posts up to three images inside a Server
+       * Action. Next's default cap is 1MB, which a single phone photo blows
+       * straight through.
+       *
+       * 4MB is the ceiling worth asking for, not an arbitrary number: Vercel
+       * hard-caps a serverless request body at 4.5MB and no config can raise
+       * it. The real fix is that the browser downscales each image before it
+       * is attached (see lib/image-compress.ts), so a normal submission is
+       * well under 1MB — this is headroom, not the primary defence.
+       */
+      bodySizeLimit: "4mb",
+    },
   },
   // A stray lockfile exists in the user directory above this project;
   // pin the workspace root so Turbopack doesn't infer the wrong one.
