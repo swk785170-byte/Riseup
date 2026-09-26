@@ -16,7 +16,7 @@ export const revalidate = 300;
 
 export default async function Home() {
   const [featured, clientLogos, testimonials] = await Promise.all([
-    getFeaturedProjects(3),
+    getFeaturedProjects(),
     getClientLogos(),
     getTestimonials(),
   ]);

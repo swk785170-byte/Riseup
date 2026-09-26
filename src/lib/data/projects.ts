@@ -36,10 +36,18 @@ export async function getAllProjects(): Promise<Project[]> {
   return rows ? rows.map(mapRowToProject) : SEED_PROJECTS;
 }
 
-/** Featured projects for the homepage FeaturedWork row. */
-export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
+/**
+ * Featured projects for the homepage FeaturedWork row.
+ *
+ * No default cap: the "Featured" toggle in the admin panel is the control, so
+ * every project flagged there appears. The row is a horizontal scroller, so it
+ * handles any count. `limit` stays available for callers that want a fixed
+ * number, but the homepage deliberately passes nothing.
+ */
+export async function getFeaturedProjects(limit?: number): Promise<Project[]> {
   const all = await getAllProjects();
-  return all.filter((p) => p.featured).slice(0, limit);
+  const featured = all.filter((p) => p.featured);
+  return typeof limit === "number" ? featured.slice(0, limit) : featured;
 }
 
 /** LMS case studies for the LMS page Customers section. */
